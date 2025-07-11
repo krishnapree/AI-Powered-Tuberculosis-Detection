@@ -115,48 +115,104 @@ def create_mock_trained_weights(model):
         logger.warning(f"Could not apply mock weights: {e}")
         return model
 
+def check_for_trained_model():
+    """Check if a trained model exists from our training pipeline"""
+    models_dir = os.path.dirname(os.path.abspath(__file__))
+    trained_model_path = os.path.join(models_dir, 'tensorflow_tb_model.h5')
+    training_history_path = os.path.join(models_dir, 'training_history.json')
+
+    if os.path.exists(trained_model_path) and os.path.exists(training_history_path):
+        try:
+            import json
+            with open(training_history_path, 'r') as f:
+                metadata = json.load(f)
+
+            accuracy = metadata.get('achieved_accuracy', 0)
+            logger.info(f"✅ Found trained model with {accuracy:.4f} ({accuracy*100:.2f}%) accuracy")
+            return trained_model_path, metadata
+        except Exception as e:
+            logger.warning(f"⚠️ Could not read training metadata: {e}")
+
+    return None, None
+
 def main():
     """Main conversion function"""
     try:
-        logger.info("🔄 Starting TensorFlow TB model creation...")
+        logger.info("🔄 Starting TensorFlow TB model setup...")
 
         # Create output directory
         models_dir = os.path.dirname(os.path.abspath(__file__))
         os.makedirs(models_dir, exist_ok=True)
 
-        # Create TensorFlow model with same architecture
-        logger.info("📦 Creating TensorFlow model...")
-        tf_model = create_tensorflow_model()
+        # Check for trained model first
+        trained_model_path, metadata = check_for_trained_model()
 
-        # Apply mock trained weights for better TB detection
-        tf_model = create_mock_trained_weights(tf_model)
+        if trained_model_path:
+            logger.info("🎯 Using trained model from training pipeline")
+            try:
+                tf_model = tf.keras.models.load_model(trained_model_path)
+                logger.info("✅ Trained model loaded successfully!")
+
+                if metadata:
+                    accuracy = metadata.get('achieved_accuracy', 0)
+                    target = metadata.get('target_accuracy', 0.9984)
+                    logger.info(f"📊 Model Performance:")
+                    logger.info(f"   Achieved: {accuracy:.4f} ({accuracy*100:.2f}%)")
+                    logger.info(f"   Target: {target:.4f} ({target*100:.2f}%)")
+
+                    if accuracy >= target:
+                        logger.info("🎯 ✅ Target accuracy achieved!")
+                    else:
+                        logger.info("🎯 ⚠️ Target accuracy not reached")
+
+            except Exception as e:
+                logger.error(f"❌ Failed to load trained model: {e}")
+                logger.info("🔄 Falling back to creating new model...")
+                tf_model = create_tensorflow_model()
+                tf_model = create_mock_trained_weights(tf_model)
+        else:
+            logger.info("📦 No trained model found, creating new model...")
+            logger.info("💡 Tip: Run 'python run_training.py' to train with your dataset")
+
+            # Create TensorFlow model with same architecture
+            tf_model = create_tensorflow_model()
+            tf_model = create_mock_trained_weights(tf_model)
 
         # Save as .h5 format
         h5_path = os.path.join(models_dir, 'tensorflow_tb_model.h5')
-        tf_model.save(h5_path)
-        logger.info(f"✅ TensorFlow model saved to {h5_path}")
+        if not os.path.exists(h5_path) or not trained_model_path:
+            tf_model.save(h5_path)
+            logger.info(f"✅ TensorFlow model saved to {h5_path}")
 
         # Convert to TensorFlow Lite for deployment
         tflite_path = os.path.join(models_dir, 'tensorflow_tb_model.tflite')
-        logger.info("🔄 Converting to TensorFlow Lite...")
+        if not os.path.exists(tflite_path):
+            logger.info("🔄 Converting to TensorFlow Lite...")
 
-        if convert_to_tflite(tf_model, tflite_path):
-            logger.info("✅ Model creation completed successfully!")
-            logger.info(f"📁 Models saved:")
-            logger.info(f"   - TensorFlow: {h5_path}")
-            logger.info(f"   - TensorFlow Lite: {tflite_path}")
-
-            # Print model summary
-            logger.info("📊 Model Summary:")
-            tf_model.summary()
-
-            logger.info("🎯 Model is ready for TB detection with 99.84% target accuracy")
-
+            if convert_to_tflite(tf_model, tflite_path):
+                logger.info("✅ TensorFlow Lite conversion completed!")
+            else:
+                logger.error("❌ TensorFlow Lite conversion failed")
         else:
-            logger.error("❌ TensorFlow Lite conversion failed")
+            logger.info("✅ TensorFlow Lite model already exists")
+
+        # Final summary
+        logger.info("✅ Model setup completed successfully!")
+        logger.info(f"📁 Models available:")
+        logger.info(f"   - TensorFlow: {h5_path}")
+        logger.info(f"   - TensorFlow Lite: {tflite_path}")
+
+        # Print model summary
+        logger.info("📊 Model Summary:")
+        tf_model.summary()
+
+        if trained_model_path:
+            logger.info("🎯 Using trained model with real dataset")
+        else:
+            logger.info("🎯 Using baseline model - train with your dataset for best results")
 
     except Exception as e:
-        logger.error(f"❌ Model creation failed: {e}")
+        logger.error(f"❌ Model setup failed: {e}")
         sys.exit(1)
 
 if __name__ == "__main__":
