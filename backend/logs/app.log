@@ -1150,3 +1150,116 @@
 2025-07-11 17:06:33,161 - werkzeug - WARNING -  * Debugger is active!
 2025-07-11 17:06:33,166 - werkzeug - INFO -  * Debugger PIN: 635-890-695
 2025-07-11 17:06:43,251 - werkzeug - INFO -  * Detected change in 'C:\\Health care\\backend\\models\\train_tb_detection_model.py', reloading
+2025-07-11 17:06:44,144 - werkzeug - INFO -  * Restarting with stat
+2025-07-11 17:06:48,600 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-11 17:06:48,600 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-11 17:06:48,600 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-11 17:06:48,739 - werkzeug - WARNING -  * Debugger is active!
+2025-07-11 17:06:48,746 - werkzeug - INFO -  * Debugger PIN: 635-890-695
+2025-07-11 17:11:17,582 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-11 17:11:17,582 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-11 17:11:17,582 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-11 17:11:17,744 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.1.5:5001
+2025-07-11 17:11:17,744 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-11 17:11:17,746 - werkzeug - INFO -  * Restarting with stat
+2025-07-11 17:11:22,097 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-11 17:11:22,097 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-11 17:11:22,097 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-11 17:11:22,228 - werkzeug - WARNING -  * Debugger is active!
+2025-07-11 17:11:22,233 - werkzeug - INFO -  * Debugger PIN: 635-890-695
+2025-07-11 17:11:47,185 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 17:11:47] "GET /api/tb-detection/model-info HTTP/1.1" 200 -
+2025-07-11 18:09:26,420 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 18:09:26] "GET / HTTP/1.1" 200 -
+2025-07-11 18:09:26,604 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 18:09:26] "POST /api/auth/verify HTTP/1.1" 200 -
+2025-07-11 18:09:26,688 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 18:09:26] "[36mGET /dashboard HTTP/1.1[0m" 304 -
+2025-07-11 18:09:26,790 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 18:09:26] "GET /api/health HTTP/1.1" 200 -
+2025-07-11 18:09:28,711 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 18:09:28] "GET /tb-detection HTTP/1.1" 200 -
+2025-07-11 18:09:35,440 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 18:09:35] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-11 18:09:43,602 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 18:09:43] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-11 18:10:20,242 - werkzeug - INFO -  * Detected change in 'C:\\Health care\\backend\\models\\train_tb_detection_model.py', reloading
+2025-07-11 18:10:21,735 - werkzeug - INFO -  * Restarting with stat
+2025-07-11 18:10:28,414 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-11 18:10:28,415 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-11 18:10:28,415 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-11 18:10:28,559 - werkzeug - WARNING -  * Debugger is active!
+2025-07-11 18:10:28,566 - werkzeug - INFO -  * Debugger PIN: 635-890-695
+2025-07-11 18:10:47,705 - werkzeug - INFO -  * Detected change in 'C:\\Health care\\backend\\models\\train_tb_detection_model.py', reloading
+2025-07-11 18:10:48,478 - werkzeug - INFO -  * Restarting with stat
+2025-07-11 18:10:52,437 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-11 18:10:52,437 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-11 18:10:52,437 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-11 18:10:52,680 - werkzeug - WARNING -  * Debugger is active!
+2025-07-11 18:10:52,686 - werkzeug - INFO -  * Debugger PIN: 635-890-695
+2025-07-11 18:11:10,821 - werkzeug - INFO -  * Detected change in 'C:\\Health care\\backend\\models\\train_tb_detection_model.py', reloading
+2025-07-11 18:11:11,885 - werkzeug - INFO -  * Restarting with stat
+2025-07-11 18:11:15,920 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-11 18:11:15,921 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-11 18:11:15,921 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-11 18:11:16,093 - werkzeug - WARNING -  * Debugger is active!
+2025-07-11 18:11:16,097 - werkzeug - INFO -  * Debugger PIN: 635-890-695
+2025-07-11 18:11:35,248 - werkzeug - INFO -  * Detected change in 'C:\\Health care\\backend\\models\\train_tb_detection_model.py', reloading
+2025-07-11 18:11:36,130 - werkzeug - INFO -  * Restarting with stat
+2025-07-11 18:11:40,874 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-11 18:11:40,874 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-11 18:11:40,874 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-11 18:11:41,014 - werkzeug - WARNING -  * Debugger is active!
+2025-07-11 18:11:41,019 - werkzeug - INFO -  * Debugger PIN: 635-890-695
+2025-07-11 18:11:53,107 - werkzeug - INFO -  * Detected change in 'C:\\Health care\\backend\\models\\train_tb_detection_model.py', reloading
+2025-07-11 18:11:54,361 - werkzeug - INFO -  * Restarting with stat
+2025-07-11 18:11:58,913 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-11 18:11:58,913 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-11 18:11:58,913 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-11 18:11:59,047 - werkzeug - WARNING -  * Debugger is active!
+2025-07-11 18:11:59,052 - werkzeug - INFO -  * Debugger PIN: 635-890-695
+2025-07-11 18:12:09,135 - werkzeug - INFO -  * Detected change in 'C:\\Health care\\backend\\models\\train_tb_detection_model.py', reloading
+2025-07-11 18:12:09,854 - werkzeug - INFO -  * Restarting with stat
+2025-07-11 18:12:13,982 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-11 18:12:13,982 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-11 18:12:13,982 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-11 18:12:14,110 - werkzeug - WARNING -  * Debugger is active!
+2025-07-11 18:12:14,114 - werkzeug - INFO -  * Debugger PIN: 635-890-695
+2025-07-11 18:12:36,273 - werkzeug - INFO -  * Detected change in 'C:\\Health care\\backend\\models\\train_tb_detection_model.py', reloading
+2025-07-11 18:12:37,367 - werkzeug - INFO -  * Restarting with stat
+2025-07-11 18:12:41,533 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-11 18:12:41,533 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-11 18:12:41,533 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-11 18:12:41,753 - werkzeug - WARNING -  * Debugger is active!
+2025-07-11 18:12:41,757 - werkzeug - INFO -  * Debugger PIN: 635-890-695
+2025-07-11 18:13:53,280 - werkzeug - INFO -  * Detected change in 'C:\\Health care\\backend\\models\\train_tb_detection_model.py', reloading
+2025-07-11 18:13:54,073 - werkzeug - INFO -  * Restarting with stat
+2025-07-11 18:13:58,370 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-11 18:13:58,370 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-11 18:13:58,370 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-11 18:13:58,562 - werkzeug - WARNING -  * Debugger is active!
+2025-07-11 18:13:58,566 - werkzeug - INFO -  * Debugger PIN: 635-890-695
+2025-07-11 18:14:25,779 - werkzeug - INFO -  * Detected change in 'C:\\Health care\\backend\\models\\train_tb_detection_model.py', reloading
+2025-07-11 18:14:26,695 - werkzeug - INFO -  * Restarting with stat
+2025-07-11 18:14:31,190 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-11 18:14:31,190 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-11 18:14:31,190 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-11 18:14:31,322 - werkzeug - WARNING -  * Debugger is active!
+2025-07-11 18:14:31,326 - werkzeug - INFO -  * Debugger PIN: 635-890-695
+2025-07-11 18:14:41,413 - werkzeug - INFO -  * Detected change in 'C:\\Health care\\backend\\models\\train_tb_detection_model.py', reloading
+2025-07-11 18:14:42,608 - werkzeug - INFO -  * Restarting with stat
+2025-07-11 18:14:46,812 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-11 18:14:46,812 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-11 18:14:46,812 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-11 18:14:46,943 - werkzeug - WARNING -  * Debugger is active!
+2025-07-11 18:14:46,946 - werkzeug - INFO -  * Debugger PIN: 635-890-695
+2025-07-11 18:45:17,566 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-11 18:45:17,566 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-11 18:45:17,566 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-11 18:45:17,721 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.1.5:5001
+2025-07-11 18:45:17,721 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-11 18:45:17,722 - werkzeug - INFO -  * Restarting with stat
+2025-07-11 18:45:22,266 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-11 18:45:22,266 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-11 18:45:22,266 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-11 18:45:22,417 - werkzeug - WARNING -  * Debugger is active!
+2025-07-11 18:45:22,422 - werkzeug - INFO -  * Debugger PIN: 635-890-695
+2025-07-11 18:45:50,154 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 18:45:50] "GET /api/tb-detection/model-info HTTP/1.1" 200 -
