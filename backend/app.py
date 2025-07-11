@@ -166,8 +166,15 @@ if __name__ == '__main__':
     logger.info("API endpoints available at http://localhost:5000/api/")
     logger.info("Health check: http://localhost:5000/api/health")
 
+    # Get port from environment (for Render deployment)
+    port = int(os.environ.get('PORT', 5001))
+    host = os.environ.get('HOST', '127.0.0.1')
+
     app.run(
-        host='127.0.0.1',
-        port=5001,
+        host=host,
+        port=port,
         debug=app.config.get('DEBUG', False)
     )
+
+# For Gunicorn deployment
+app = create_app(os.environ.get('FLASK_ENV', 'default'))
