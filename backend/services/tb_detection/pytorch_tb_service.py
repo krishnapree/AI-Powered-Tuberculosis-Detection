@@ -46,7 +46,7 @@ class TBDetectionModel:
         self.setup_transforms()  # Only setup transforms initially
     
     def load_model(self):
-        """Load the trained PyTorch model (lazy loading)"""
+        """Load the trained PyTorch model (lazy loading with memory optimization)"""
         if self.model_loaded:
             return
 
