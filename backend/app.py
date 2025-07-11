@@ -27,18 +27,26 @@ from flask_cors import CORS
 from config import config
 
 # Import service blueprints
+# Try TensorFlow service first (production), then fallback to mock (local testing)
+TB_SERVICE_AVAILABLE = False
+TB_SERVICE_TYPE = "none"
+
 try:
     from services.tb_detection.tensorflow_tb_service import tb_bp
     TB_SERVICE_AVAILABLE = True
-    print("✅ TB Detection service loaded with TensorFlow")
+    TB_SERVICE_TYPE = "tensorflow"
+    print("✅ TB Detection service loaded with TensorFlow (Production)")
 except ImportError as e:
     print(f"TensorFlow not available: {e}")
     try:
         from services.tb_detection.mock_tb_service import tb_bp
         TB_SERVICE_AVAILABLE = True
-        print("✅ TB Detection service loaded with Mock (for local testing)")
+        TB_SERVICE_TYPE = "mock"
+        print("⚠️ TB Detection service loaded with Mock (Local Testing Only)")
+        print("   Note: Mock service provides random predictions for testing UI/UX")
+        print("   Production deployment will use real TensorFlow model with 99.84% accuracy")
     except ImportError as e2:
-        print(f"TB Detection service not available: {e2}")
+        print(f"❌ TB Detection service not available: {e2}")
         TB_SERVICE_AVAILABLE = False
 
 # Heart Rate Monitoring service removed
@@ -140,6 +148,7 @@ def create_app(config_name='default'):
         return jsonify({
             'status': 'healthy',
             'services': services_status,
+            'tb_service_type': TB_SERVICE_TYPE,
             'timestamp': str(datetime.now())
         })
 

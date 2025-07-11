@@ -133,7 +133,8 @@ class TBDetectionModel:
                     logger.warning("No trained model found, creating model with ImageNet weights")
                     self.model = self.create_model_architecture()
                     self.model_loaded = True
-                    logger.info("✅ Model created with ImageNet weights (will need fine-tuning for best accuracy)")
+                    logger.info("✅ Model created with ImageNet weights")
+                    logger.warning("⚠️ Using ImageNet weights - for production, upload trained TB model")
 
             # Force garbage collection to free memory
             gc.collect()
