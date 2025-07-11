@@ -135,10 +135,12 @@ tb_detector = None
 try:
     # Try multiple possible model paths
     possible_paths = [
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../models/pytorch_tb_model.pth'),  # backend/models/
         os.path.join(os.path.dirname(os.path.abspath(__file__)), 'models/pytorch_tb_model.pth'),
         os.path.join(os.path.dirname(os.path.abspath(__file__)), '../tuberclosis/models/pytorch_tb_model.pth'),
         'Disease Diagnosis/tuberclosis/models/pytorch_tb_model.pth',
-        'models/pytorch_tb_model.pth'
+        'models/pytorch_tb_model.pth',
+        'backend/models/pytorch_tb_model.pth'
     ]
 
     model_path = None

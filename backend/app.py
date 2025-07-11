@@ -50,6 +50,9 @@ except ImportError as e:
     AUTH_SERVICE_AVAILABLE = False
 
 # Configure logging
+import os
+os.makedirs('logs', exist_ok=True)  # Create logs directory if it doesn't exist
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
