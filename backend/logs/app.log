@@ -1085,3 +1085,4 @@
 2025-07-11 16:04:09,977 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:04:09] "POST /api/tb-detection/upload HTTP/1.1" 200 -
 2025-07-11 16:04:14,584 - services.tb_detection.mock_tb_service - INFO - Mock TB prediction completed: Tuberculosis (75.19%)
 2025-07-11 16:04:14,585 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:04:14] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-11 16:12:44,106 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:12:44] "GET /tb-detection HTTP/1.1" 200 -
