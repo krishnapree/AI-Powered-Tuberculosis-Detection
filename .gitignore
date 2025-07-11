@@ -11,19 +11,21 @@ env/
 ai assist/
 Disease Diagnosis/
 
-# Large model files (use Git LFS)
+# Large model files (use Git LFS) - but allow our TB model
 *.h5
 *.pkl
 *.dll
 *.lib
 *.pyd
+# Allow our TB model
+!backend/models/pytorch_tb_model.pth
 
 # Database
 *.db
 *.sqlite3
 
-# Logs
-logs/
+# Logs (but allow logs directory structure)
+logs/*.log
 *.log
 
 # Uploads
@@ -53,6 +55,7 @@ dist/
 .DS_Store
 Thumbs.db
 
-# Model files (large files)
+# Model files (large files) - but allow our TB model
 *.pth
+!backend/models/pytorch_tb_model.pth
 *.h5
