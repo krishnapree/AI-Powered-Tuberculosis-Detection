@@ -345,7 +345,7 @@ def is_chest_xray(image_path):
 
 
 # API Routes
-@tb_bp.route('/api/upload', methods=['POST'])
+@tb_bp.route('/upload', methods=['POST'])
 def upload_and_predict():
     """API endpoint for TB detection from uploaded image"""
     try:
@@ -421,7 +421,7 @@ def upload_and_predict():
         return jsonify({'error': f'Prediction failed: {str(e)}'}), 500
 
 
-@tb_bp.route('/api/model-info')
+@tb_bp.route('/model-info')
 def model_info():
     """API endpoint for model information"""
     detector = get_tb_detector()
@@ -441,7 +441,7 @@ def model_info():
         }), 500
 
 
-@tb_bp.route('/api/test')
+@tb_bp.route('/test')
 def test_service():
     """Test endpoint for TB detection service"""
     detector = get_tb_detector()

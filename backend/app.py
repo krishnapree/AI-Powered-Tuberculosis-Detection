@@ -32,8 +32,14 @@ try:
     TB_SERVICE_AVAILABLE = True
     print("✅ TB Detection service loaded with TensorFlow")
 except ImportError as e:
-    print(f"TB Detection service not available: {e}")
-    TB_SERVICE_AVAILABLE = False
+    print(f"TensorFlow not available: {e}")
+    try:
+        from services.tb_detection.mock_tb_service import tb_bp
+        TB_SERVICE_AVAILABLE = True
+        print("✅ TB Detection service loaded with Mock (for local testing)")
+    except ImportError as e2:
+        print(f"TB Detection service not available: {e2}")
+        TB_SERVICE_AVAILABLE = False
 
 # Heart Rate Monitoring service removed
 HR_SERVICE_AVAILABLE = False
