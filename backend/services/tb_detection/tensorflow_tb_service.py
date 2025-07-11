@@ -39,13 +39,26 @@ tb_bp = Blueprint('tuberculosis', __name__,
 class TBDetectionModel:
     """High-accuracy TB detection model wrapper with TensorFlow Lite"""
 
-    def __init__(self, model_path='models/tensorflow_tb_model.tflite'):
+    def __init__(self, model_path='models/tensorflow_tb_model_gpu.tflite'):
         self.model = None
         self.interpreter = None
         self.input_details = None
         self.output_details = None
-        self.model_path = model_path
-        self.accuracy = 99.84  # Our achieved accuracy
+
+        # Use GPU-ready model by default, fallback to original if not available
+        gpu_model_path = 'models/tensorflow_tb_model_gpu.tflite'
+        original_model_path = 'models/tensorflow_tb_model.tflite'
+
+        if os.path.exists(gpu_model_path):
+            self.model_path = gpu_model_path
+            self.accuracy = 65.69  # GPU-ready model accuracy
+        elif os.path.exists(original_model_path):
+            self.model_path = original_model_path
+            self.accuracy = 51.77  # Original model accuracy
+        else:
+            self.model_path = model_path  # Use provided path
+            self.accuracy = 65.69  # Assume GPU-ready model
+
         self.model_loaded = False
         self.input_shape = (224, 224, 3)
         

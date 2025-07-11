@@ -1263,3 +1263,18 @@
 2025-07-11 18:45:22,417 - werkzeug - WARNING -  * Debugger is active!
 2025-07-11 18:45:22,422 - werkzeug - INFO -  * Debugger PIN: 635-890-695
 2025-07-11 18:45:50,154 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 18:45:50] "GET /api/tb-detection/model-info HTTP/1.1" 200 -
+2025-07-11 19:51:53,475 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-11 19:51:53,476 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-11 19:51:53,476 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-11 19:51:53,649 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.1.5:5001
+2025-07-11 19:51:53,650 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-11 19:51:53,651 - werkzeug - INFO -  * Restarting with stat
+2025-07-11 19:51:58,308 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-11 19:51:58,308 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-11 19:51:58,308 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-11 19:51:58,500 - werkzeug - WARNING -  * Debugger is active!
+2025-07-11 19:51:58,507 - werkzeug - INFO -  * Debugger PIN: 635-890-695
+2025-07-11 19:52:26,135 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 19:52:26] "GET /api/tb-detection/model-info HTTP/1.1" 200 -

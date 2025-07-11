@@ -1,0 +1,25 @@
+{
+  "training_date": "2025-07-11",
+  "model_architecture": "ResNet50",
+  "target_accuracy": 0.9984,
+  "achieved_accuracy": 0.656862735748291,
+  "training_samples": 948,
+  "validation_samples": 203,
+  "test_samples": 204,
+  "training_time_minutes": 52.32894534269969,
+  "gpu_used": false,
+  "mixed_precision": false,
+  "progressive_training": true,
+  "augmentation_strength": "high",
+  "classification_report": "              precision    recall  f1-score   support\n\n      Normal       0.80      0.41      0.54       101\n          TB       0.61      0.90      0.73       103\n\n    accuracy                           0.66       204\n   macro avg       0.71      0.65      0.63       204\nweighted avg       0.70      0.66      0.63       204\n",
+  "confusion_matrix": [
+    [
+      41,
+      60
+    ],
+    [
+      10,
+      93
+    ]
+  ]
+}
