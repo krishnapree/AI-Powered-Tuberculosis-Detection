@@ -27,16 +27,13 @@ from flask_cors import CORS
 from config import config
 
 # Import service blueprints
-# Temporarily disable TB detection for memory optimization on Render
-TB_SERVICE_AVAILABLE = False
-print("TB Detection service temporarily disabled for memory optimization")
-
-# try:
-#     from services.tb_detection.pytorch_tb_service import tb_bp
-#     TB_SERVICE_AVAILABLE = True
-# except ImportError as e:
-#     print(f"TB Detection service not available: {e}")
-#     TB_SERVICE_AVAILABLE = False
+try:
+    from services.tb_detection.tensorflow_tb_service import tb_bp
+    TB_SERVICE_AVAILABLE = True
+    print("✅ TB Detection service loaded with TensorFlow")
+except ImportError as e:
+    print(f"TB Detection service not available: {e}")
+    TB_SERVICE_AVAILABLE = False
 
 # Heart Rate Monitoring service removed
 HR_SERVICE_AVAILABLE = False
