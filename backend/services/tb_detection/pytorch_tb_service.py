@@ -34,20 +34,24 @@ tb_bp = Blueprint('tuberculosis', __name__,
                   static_folder='static')
 
 class TBDetectionModel:
-    """High-accuracy TB detection model wrapper"""
-    
+    """High-accuracy TB detection model wrapper with lazy loading"""
+
     def __init__(self, model_path='models/pytorch_tb_model.pth'):
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.model = None
         self.transform = None
         self.model_path = model_path
         self.accuracy = 99.84  # Our achieved accuracy
-        self.load_model()
-        self.setup_transforms()
+        self.model_loaded = False
+        self.setup_transforms()  # Only setup transforms initially
     
     def load_model(self):
-        """Load the trained PyTorch model"""
+        """Load the trained PyTorch model (lazy loading)"""
+        if self.model_loaded:
+            return
+
         try:
+            import gc
             # Create model architecture (same as training)
             self.model = models.resnet50(weights=models.ResNet50_Weights.IMAGENET1K_V1)
             num_features = self.model.fc.in_features
@@ -58,21 +62,35 @@ class TBDetectionModel:
                 nn.Dropout(0.3),
                 nn.Linear(512, 2)  # 2 classes: Normal, TB
             )
-            
+
             # Load trained weights
             if os.path.exists(self.model_path):
                 self.model.load_state_dict(torch.load(self.model_path, map_location=self.device))
                 self.model.to(self.device)
                 self.model.eval()
+                self.model_loaded = True
                 logger.info(f"✅ High-accuracy TB model loaded successfully from {self.model_path}")
                 logger.info(f"🎯 Model accuracy: {self.accuracy}%")
+
+                # Force garbage collection to free memory
+                gc.collect()
             else:
                 logger.error(f"❌ Model file not found: {self.model_path}")
                 raise FileNotFoundError(f"Model file not found: {self.model_path}")
-                
+
         except Exception as e:
             logger.error(f"❌ Error loading TB model: {e}")
             raise e
+
+    def unload_model(self):
+        """Unload model to free memory"""
+        if self.model is not None:
+            del self.model
+            self.model = None
+            self.model_loaded = False
+            import gc
+            gc.collect()
+            logger.info("🗑️ TB model unloaded to free memory")
     
     def setup_transforms(self):
         """Setup image preprocessing transforms"""
@@ -85,35 +103,39 @@ class TBDetectionModel:
     
     def predict(self, image_path):
         """
-        Predict TB from chest X-ray image
-        
+        Predict TB from chest X-ray image with lazy loading
+
         Args:
             image_path (str): Path to the chest X-ray image
-            
+
         Returns:
             dict: Prediction results with confidence scores
         """
         try:
+            # Load model only when needed (lazy loading)
+            if not self.model_loaded:
+                self.load_model()
+
             # Load and preprocess image
             image = Image.open(image_path).convert('RGB')
             image_tensor = self.transform(image).unsqueeze(0).to(self.device)
-            
+
             # Make prediction
             with torch.no_grad():
                 outputs = self.model(image_tensor)
                 probabilities = torch.softmax(outputs, dim=1)
                 predicted_class = torch.argmax(probabilities, dim=1).item()
                 confidence = probabilities[0][predicted_class].item()
-                
+
                 # Class mapping: 0 = Normal, 1 = TB
                 class_names = ['Normal', 'Tuberculosis']
                 prediction = class_names[predicted_class]
-                
+
                 # Get both class probabilities
                 normal_prob = probabilities[0][0].item()
                 tb_prob = probabilities[0][1].item()
-                
-                return {
+
+                result = {
                     'prediction': prediction,
                     'confidence': confidence,
                     'normal_probability': normal_prob,
@@ -121,7 +143,12 @@ class TBDetectionModel:
                     'model_accuracy': self.accuracy,
                     'is_tb_detected': predicted_class == 1
                 }
-                
+
+                # Unload model after prediction to free memory
+                self.unload_model()
+
+                return result
+
         except Exception as e:
             logger.error(f"❌ Error during TB prediction: {e}")
             return {
@@ -130,8 +157,10 @@ class TBDetectionModel:
                 'confidence': 0.0
             }
 
-# Initialize the TB detection model
+# Initialize the TB detection model (lazy loading - model not loaded until needed)
 tb_detector = None
+tb_model_path = None
+
 try:
     # Try multiple possible model paths
     possible_paths = [
@@ -143,20 +172,21 @@ try:
         'backend/models/pytorch_tb_model.pth'
     ]
 
-    model_path = None
     for path in possible_paths:
         if os.path.exists(path):
-            model_path = path
+            tb_model_path = path
             break
 
-    if model_path:
-        tb_detector = TBDetectionModel(model_path)
-        logger.info(f"✅ TB detector initialized successfully with model: {model_path}")
+    if tb_model_path:
+        # Create detector instance but don't load model yet (lazy loading)
+        tb_detector = TBDetectionModel(tb_model_path)
+        logger.info(f"✅ TB detector initialized (lazy loading) with model path: {tb_model_path}")
     else:
         logger.error(f"❌ TB model not found in any of the expected locations: {possible_paths}")
 
 except Exception as e:
-    logger.error(f"Failed to initialize TB detector: {e}")
+    logger.error(f"❌ Failed to initialize TB detector: {e}")
+    tb_detector = None
 
 # Constants
 UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static/uploads')

@@ -8,15 +8,17 @@ An advanced AI-powered tuberculosis detection platform with two core services:
 2. AI Health Assistant (Google Gemini powered)
 
 This is the backend server designed for frontend/backend separation with user authentication.
+Memory optimized for deployment on Render.
 
 Author: TB Detection Platform Team
-Version: 3.0.0
+Version: 3.0.1
 License: MIT
 """
 
 import os
 import sys
 import logging
+import gc
 from datetime import datetime
 from flask import Flask, jsonify, request, send_from_directory, render_template
 from flask_cors import CORS
@@ -145,6 +147,22 @@ def create_app(config_name='default'):
     def ai_test():
         return jsonify({'service': 'AI Assistant', 'status': 'available'})
 
+    @app.route('/api/memory-status', methods=['GET'])
+    def memory_status():
+        """Memory monitoring endpoint for debugging"""
+        import psutil
+        import sys
+
+        process = psutil.Process()
+        memory_info = process.memory_info()
+
+        return jsonify({
+            'memory_usage_mb': round(memory_info.rss / 1024 / 1024, 2),
+            'memory_percent': round(process.memory_percent(), 2),
+            'python_version': sys.version,
+            'gc_count': len(gc.get_objects())
+        })
+
     # Error handlers
     @app.errorhandler(404)
     def not_found(error):
@@ -171,13 +189,18 @@ if __name__ == '__main__':
 
     # Get port from environment (for Render deployment)
     port = int(os.environ.get('PORT', 5001))
-    host = os.environ.get('HOST', '127.0.0.1')
+    host = os.environ.get('HOST', '0.0.0.0')  # Changed to 0.0.0.0 for deployment
+
+    # Memory optimization
+    gc.collect()
 
     app.run(
         host=host,
         port=port,
-        debug=app.config.get('DEBUG', False)
+        debug=app.config.get('DEBUG', False),
+        threaded=True  # Enable threading for better performance
     )
 
-# For Gunicorn deployment
+# For Gunicorn deployment (memory optimized)
+gc.collect()  # Force garbage collection
 app = create_app(os.environ.get('FLASK_ENV', 'default'))
