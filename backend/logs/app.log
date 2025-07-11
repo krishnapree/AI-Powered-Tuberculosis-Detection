@@ -1036,3 +1036,52 @@
 2025-07-11 15:42:42,219 - __main__ - INFO - Health check: http://localhost:5000/api/health
 2025-07-11 15:42:42,240 - werkzeug - WARNING -  * Debugger is active!
 2025-07-11 15:42:42,243 - werkzeug - INFO -  * Debugger PIN: 635-890-695
+2025-07-11 15:45:05,149 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-11 15:45:05,149 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-11 15:45:05,149 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-11 15:45:05,188 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.1.5:5001
+2025-07-11 15:45:05,189 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-11 15:45:05,190 - werkzeug - INFO -  * Restarting with stat
+2025-07-11 15:45:05,761 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-11 15:45:05,762 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-11 15:45:05,762 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-11 15:45:05,785 - werkzeug - WARNING -  * Debugger is active!
+2025-07-11 15:45:05,789 - werkzeug - INFO -  * Debugger PIN: 635-890-695
+2025-07-11 15:45:26,986 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:45:26] "GET /tb-detection HTTP/1.1" 200 -
+2025-07-11 15:45:33,342 - services.tb_detection.mock_tb_service - INFO - Mock TB prediction completed: Normal (92.12%)
+2025-07-11 15:45:33,343 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:45:33] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-11 15:45:55,121 - services.tb_detection.mock_tb_service - INFO - Mock TB prediction completed: Tuberculosis (87.30%)
+2025-07-11 15:45:55,122 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:45:55] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-11 15:46:05,176 - services.tb_detection.mock_tb_service - INFO - Mock TB prediction completed: Normal (89.05%)
+2025-07-11 15:46:05,177 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:46:05] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-11 15:46:17,452 - services.tb_detection.mock_tb_service - INFO - Mock TB prediction completed: Normal (90.69%)
+2025-07-11 15:46:17,454 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:46:17] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-11 15:46:23,045 - services.tb_detection.mock_tb_service - INFO - Mock TB prediction completed: Normal (91.52%)
+2025-07-11 15:46:23,046 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:46:23] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-11 15:56:09,759 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:56:09] "GET /tb-detection HTTP/1.1" 200 -
+2025-07-11 15:56:15,195 - services.tb_detection.mock_tb_service - INFO - Mock TB prediction completed: Tuberculosis (94.57%)
+2025-07-11 15:56:15,197 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:56:15] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-11 15:56:20,901 - services.tb_detection.mock_tb_service - INFO - Mock TB prediction completed: Normal (97.07%)
+2025-07-11 15:56:20,902 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:56:20] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-11 15:56:24,889 - services.tb_detection.mock_tb_service - INFO - Mock TB prediction completed: Normal (88.95%)
+2025-07-11 15:56:24,890 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:56:24] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-11 15:56:30,779 - services.tb_detection.mock_tb_service - INFO - Mock TB prediction completed: Normal (94.10%)
+2025-07-11 15:56:30,779 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:56:30] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-11 15:56:34,443 - services.tb_detection.mock_tb_service - INFO - Mock TB prediction completed: Tuberculosis (89.46%)
+2025-07-11 15:56:34,444 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:56:34] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-11 15:56:37,498 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:56:37] "GET /tb-detection HTTP/1.1" 200 -
+2025-07-11 15:56:38,116 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:56:38] "GET /tb-detection HTTP/1.1" 200 -
+2025-07-11 15:56:38,272 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:56:38] "GET /tb-detection HTTP/1.1" 200 -
+2025-07-11 15:56:38,424 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:56:38] "GET /tb-detection HTTP/1.1" 200 -
+2025-07-11 15:56:38,565 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:56:38] "GET /tb-detection HTTP/1.1" 200 -
+2025-07-11 16:03:56,365 - services.tb_detection.mock_tb_service - INFO - Mock TB prediction completed: Tuberculosis (90.15%)
+2025-07-11 16:03:56,367 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:03:56] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-11 16:04:05,694 - services.tb_detection.mock_tb_service - INFO - Mock TB prediction completed: Normal (92.89%)
+2025-07-11 16:04:05,697 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:04:05] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-11 16:04:09,976 - services.tb_detection.mock_tb_service - INFO - Mock TB prediction completed: Tuberculosis (83.36%)
+2025-07-11 16:04:09,977 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:04:09] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-11 16:04:14,584 - services.tb_detection.mock_tb_service - INFO - Mock TB prediction completed: Tuberculosis (75.19%)
+2025-07-11 16:04:14,585 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:04:14] "POST /api/tb-detection/upload HTTP/1.1" 200 -
