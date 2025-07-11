@@ -1086,3 +1086,24 @@
 2025-07-11 16:04:14,584 - services.tb_detection.mock_tb_service - INFO - Mock TB prediction completed: Tuberculosis (75.19%)
 2025-07-11 16:04:14,585 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:04:14] "POST /api/tb-detection/upload HTTP/1.1" 200 -
 2025-07-11 16:12:44,106 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:12:44] "GET /tb-detection HTTP/1.1" 200 -
+2025-07-11 16:36:26,571 - werkzeug - INFO -  * Detected change in 'C:\\Health care\\backend\\models\\train_tb_detection_model.py', reloading
+2025-07-11 16:36:26,828 - werkzeug - INFO -  * Restarting with stat
+2025-07-11 16:36:27,527 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-11 16:36:27,527 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-11 16:36:27,527 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-11 16:36:27,555 - werkzeug - WARNING -  * Debugger is active!
+2025-07-11 16:36:27,561 - werkzeug - INFO -  * Debugger PIN: 635-890-695
+2025-07-11 16:37:02,742 - werkzeug - INFO -  * Detected change in 'C:\\Health care\\backend\\models\\train_tb_detection_model.py', reloading
+2025-07-11 16:37:02,822 - werkzeug - INFO -  * Restarting with stat
+2025-07-11 16:37:03,425 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-11 16:37:03,425 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-11 16:37:03,426 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-11 16:37:03,453 - werkzeug - WARNING -  * Debugger is active!
+2025-07-11 16:37:03,457 - werkzeug - INFO -  * Debugger PIN: 635-890-695
+2025-07-11 16:38:04,752 - werkzeug - INFO -  * Detected change in 'C:\\Health care\\backend\\models\\convert_pytorch_to_tensorflow.py', reloading
+2025-07-11 16:38:04,802 - werkzeug - INFO -  * Restarting with stat
+2025-07-11 16:38:05,442 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-11 16:38:05,442 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-11 16:38:05,442 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-11 16:38:05,469 - werkzeug - WARNING -  * Debugger is active!
+2025-07-11 16:38:05,475 - werkzeug - INFO -  * Debugger PIN: 635-890-695
