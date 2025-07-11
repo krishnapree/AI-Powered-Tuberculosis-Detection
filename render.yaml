@@ -2,15 +2,15 @@ services:
   - type: web
     name: tb-detection-platform
     env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: cd backend && gunicorn --bind 0.0.0.0:$PORT app:app
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT wsgi:app
     envVars:
       - key: FLASK_ENV
         value: production
       - key: FLASK_DEBUG
         value: "False"
       - key: PYTHON_VERSION
-        value: "3.13"
+        value: "3.11"
       - key: SECRET_KEY
         generateValue: true
       - key: CORS_ORIGINS

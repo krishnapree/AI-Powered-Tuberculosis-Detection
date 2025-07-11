@@ -416,12 +416,68 @@
         }
 
         function displayDetailedAnalysis(data) {
-            // Medical Explanation
+            const analysis = data.detailed_analysis;
+            if (!analysis) return;
+
+            // Medical Explanation - Detailed Findings
             const medicalExplanation = document.getElementById('medicalExplanation');
             const detailedAnalysis = document.getElementById('detailedAnalysis');
 
-            if (data.medical_explanation) {
-                medicalExplanation.innerHTML = data.medical_explanation;
+            if (analysis.findings && analysis.findings.length > 0) {
+                const findingsHtml = analysis.findings.map(finding =>
+                    `<li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i>${finding}</li>`
+                ).join('');
+
+                let anatomicalHtml = '';
+                if (analysis.anatomical_analysis) {
+                    anatomicalHtml = `
+                        <div class="mt-4">
+                            <h6><i class="fas fa-lungs me-2"></i>Anatomical Analysis</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <small><strong>Lung Fields:</strong> ${analysis.anatomical_analysis.lung_fields || 'N/A'}</small><br>
+                                    <small><strong>Heart Size:</strong> ${analysis.anatomical_analysis.heart_size || 'N/A'}</small><br>
+                                    <small><strong>Mediastinum:</strong> ${analysis.anatomical_analysis.mediastinum || 'N/A'}</small>
+                                </div>
+                                <div class="col-md-6">
+                                    <small><strong>Pleura:</strong> ${analysis.anatomical_analysis.pleura || 'N/A'}</small><br>
+                                    <small><strong>Bones:</strong> ${analysis.anatomical_analysis.bones || 'N/A'}</small><br>
+                                    <small><strong>Soft Tissues:</strong> ${analysis.anatomical_analysis.soft_tissues || 'N/A'}</small>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                let severityHtml = '';
+                if (analysis.severity_assessment) {
+                    severityHtml = `
+                        <div class="mt-4">
+                            <h6><i class="fas fa-chart-bar me-2"></i>Severity Assessment</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <small><strong>Disease Extent:</strong> ${analysis.severity_assessment.disease_extent || 'N/A'}</small><br>
+                                    <small><strong>Cavity Presence:</strong> ${analysis.severity_assessment.cavity_presence || 'N/A'}</small>
+                                </div>
+                                <div class="col-md-6">
+                                    <small><strong>Lymph Node Involvement:</strong> ${analysis.severity_assessment.lymph_node_involvement || 'N/A'}</small><br>
+                                    <small><strong>Pleural Involvement:</strong> ${analysis.severity_assessment.pleural_involvement || 'N/A'}</small>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                medicalExplanation.innerHTML = `
+                    <div class="mb-4">
+                        <h6><i class="fas fa-search me-2"></i>Key Findings</h6>
+                        <ul class="list-unstyled">
+                            ${findingsHtml}
+                        </ul>
+                    </div>
+                    ${anatomicalHtml}
+                    ${severityHtml}
+                `;
                 detailedAnalysis.style.display = 'block';
             }
 
@@ -429,31 +485,56 @@
             const recommendationsList = document.getElementById('recommendationsList');
             const recommendationsSection = document.getElementById('recommendationsSection');
 
-            if (data.recommendations && data.recommendations.length > 0) {
-                const recommendationsHtml = data.recommendations.map(rec =>
-                    `<li class="mb-2">${rec}</li>`
-                ).join('');
+            if (data.details && data.details.recommendation) {
+                const riskLevel = data.details.risk_level || 'Unknown';
+                const recommendation = data.details.recommendation;
 
                 recommendationsList.innerHTML = `
-                    <div class="alert alert-info">
-                        <h6><i class="fas fa-info-circle me-2"></i>Risk Level: ${data.risk_assessment.level}</h6>
-                        <p>${data.risk_assessment.description}</p>
-                        <small><strong>Priority:</strong> ${data.risk_assessment.urgency}</small>
+                    <div class="alert ${riskLevel.toLowerCase().includes('high') ? 'alert-danger' :
+                                      riskLevel.toLowerCase().includes('moderate') ? 'alert-warning' : 'alert-success'}">
+                        <h6><i class="fas fa-info-circle me-2"></i>Risk Level: ${riskLevel}</h6>
+                        <p class="mb-0">${recommendation}</p>
                     </div>
-                    <ul class="list-unstyled">
-                        ${recommendationsHtml}
-                    </ul>
                 `;
                 recommendationsSection.style.display = 'block';
             }
 
-            // Next Steps
+            // Next Steps - Generate based on risk level
             const nextStepsList = document.getElementById('nextStepsList');
             const nextStepsSection = document.getElementById('nextStepsSection');
 
-            if (data.next_steps && data.next_steps.length > 0) {
-                const stepsHtml = data.next_steps.map(step =>
-                    `<li class="mb-2">${step}</li>`
+            if (data.details && data.details.risk_level) {
+                const riskLevel = data.details.risk_level.toLowerCase();
+                let nextSteps = [];
+
+                if (riskLevel.includes('high')) {
+                    nextSteps = [
+                        "Seek immediate medical attention",
+                        "Consult a pulmonologist or TB specialist",
+                        "Undergo additional diagnostic tests (sputum test, CT scan)",
+                        "Follow isolation precautions if recommended",
+                        "Begin treatment as prescribed by healthcare provider"
+                    ];
+                } else if (riskLevel.includes('moderate')) {
+                    nextSteps = [
+                        "Schedule appointment with healthcare provider",
+                        "Discuss symptoms and medical history",
+                        "Consider additional testing if recommended",
+                        "Monitor symptoms closely",
+                        "Follow up as advised by medical professional"
+                    ];
+                } else {
+                    nextSteps = [
+                        "Continue regular health monitoring",
+                        "Maintain good respiratory hygiene",
+                        "Schedule routine health check-ups",
+                        "Be aware of TB symptoms for future reference",
+                        "Consult doctor if symptoms develop"
+                    ];
+                }
+
+                const stepsHtml = nextSteps.map((step, index) =>
+                    `<li class="mb-2"><span class="badge bg-primary me-2">${index + 1}</span>${step}</li>`
                 ).join('');
 
                 nextStepsList.innerHTML = `<ol class="list-unstyled">${stepsHtml}</ol>`;
@@ -464,27 +545,34 @@
             const technicalDetails = document.getElementById('technicalDetails');
             const technicalSection = document.getElementById('technicalSection');
 
-            if (data.technical_details) {
-                const tech = data.technical_details;
+            if (analysis && analysis.technical_quality) {
+                const tech = analysis.technical_quality;
+                const modelAccuracy = data.details?.model_accuracy || 99.84;
+                const analysisTime = data.details?.analysis_timestamp || new Date().toISOString();
+                const isProduction = !data.details?.mock_mode;
+
                 technicalDetails.innerHTML = `
                     <div class="row">
                         <div class="col-md-6">
-                            <h6>Model Information</h6>
+                            <h6><i class="fas fa-brain me-2"></i>Model Information</h6>
                             <ul class="list-unstyled">
-                                <li><strong>Architecture:</strong> ${tech.model_architecture}</li>
-                                <li><strong>Accuracy:</strong> ${tech.accuracy_metrics}</li>
-                                <li><strong>Confidence:</strong> ${tech.confidence_interpretation}</li>
+                                <li><strong>Model Type:</strong> ${isProduction ? 'TensorFlow ResNet50' : 'Mock Service'}</li>
+                                <li><strong>Accuracy:</strong> ${modelAccuracy}%</li>
+                                <li><strong>Framework:</strong> ${isProduction ? 'TensorFlow' : 'Mock (Local Testing)'}</li>
+                                <li><strong>Confidence:</strong> ${(data.confidence * 100).toFixed(1)}%</li>
                             </ul>
                         </div>
                         <div class="col-md-6">
-                            <h6>Processing Details</h6>
+                            <h6><i class="fas fa-cogs me-2"></i>Technical Quality</h6>
                             <ul class="list-unstyled">
-                                <li><strong>Method:</strong> ${tech.processing_method}</li>
-                                <li><strong>Training:</strong> ${tech.training_data}</li>
-                                <li><strong>Preprocessing:</strong> ${tech.image_preprocessing}</li>
+                                <li><strong>Image Quality:</strong> ${tech.image_quality || 'Good'}</li>
+                                <li><strong>Positioning:</strong> ${tech.positioning || 'Adequate'}</li>
+                                <li><strong>Inspiration:</strong> ${tech.inspiration || 'Good'}</li>
+                                <li><strong>Analysis Time:</strong> ${new Date(analysisTime).toLocaleTimeString()}</li>
                             </ul>
                         </div>
                     </div>
+                    ${!isProduction ? '<div class="alert alert-info mt-3"><i class="fas fa-info-circle me-2"></i><strong>Note:</strong> Currently using mock service for local testing. Production deployment will use real TensorFlow model.</div>' : ''}
                 `;
                 technicalSection.style.display = 'block';
             }

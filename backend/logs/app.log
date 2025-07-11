@@ -973,3 +973,66 @@
 2025-07-11 15:35:38,894 - __main__ - INFO - Health check: http://localhost:5000/api/health
 2025-07-11 15:35:38,916 - werkzeug - WARNING -  * Debugger is active!
 2025-07-11 15:35:38,920 - werkzeug - INFO -  * Debugger PIN: 635-890-695
+2025-07-11 15:36:03,918 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-11 15:36:03,918 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-11 15:36:03,919 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-11 15:36:03,955 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.1.5:5001
+2025-07-11 15:36:03,955 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-11 15:36:03,956 - werkzeug - INFO -  * Restarting with stat
+2025-07-11 15:36:04,533 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-11 15:36:04,533 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-11 15:36:04,533 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-11 15:36:04,555 - werkzeug - WARNING -  * Debugger is active!
+2025-07-11 15:36:04,558 - werkzeug - INFO -  * Debugger PIN: 635-890-695
+2025-07-11 15:38:21,782 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:38:21] "GET /api/health HTTP/1.1" 200 -
+2025-07-11 15:38:29,496 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:38:29] "GET / HTTP/1.1" 200 -
+2025-07-11 15:38:29,580 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:38:29] "POST /api/auth/verify HTTP/1.1" 200 -
+2025-07-11 15:38:29,720 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:38:29] "[36mGET /dashboard HTTP/1.1[0m" 304 -
+2025-07-11 15:38:29,806 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:38:29] "GET /api/health HTTP/1.1" 200 -
+2025-07-11 15:38:32,967 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:38:32] "GET /tb-detection HTTP/1.1" 200 -
+2025-07-11 15:38:37,615 - services.tb_detection.mock_tb_service - INFO - Mock TB prediction completed: Tuberculosis (80.54%)
+2025-07-11 15:38:37,616 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:38:37] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-11 15:38:45,884 - services.tb_detection.mock_tb_service - INFO - Mock TB prediction completed: Normal (86.60%)
+2025-07-11 15:38:45,885 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:38:45] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-11 15:38:52,017 - services.tb_detection.mock_tb_service - INFO - Mock TB prediction completed: Tuberculosis (81.19%)
+2025-07-11 15:38:52,018 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:38:52] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-11 15:39:01,389 - services.tb_detection.mock_tb_service - INFO - Mock TB prediction completed: Normal (94.46%)
+2025-07-11 15:39:01,391 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:39:01] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-11 15:39:10,375 - services.tb_detection.mock_tb_service - INFO - Mock TB prediction completed: Normal (97.40%)
+2025-07-11 15:39:10,376 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:39:10] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-11 15:39:18,036 - services.tb_detection.mock_tb_service - INFO - Mock TB prediction completed: Tuberculosis (88.09%)
+2025-07-11 15:39:18,037 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:39:18] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-11 15:40:46,613 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:40:46] "GET /tb-detection HTTP/1.1" 200 -
+2025-07-11 15:40:48,997 - werkzeug - INFO -  * Detected change in 'C:\\Health care\\backend\\services\\tb_detection\\mock_tb_service.py', reloading
+2025-07-11 15:40:49,046 - werkzeug - INFO -  * Restarting with stat
+2025-07-11 15:40:49,650 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-11 15:40:49,650 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-11 15:40:49,650 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-11 15:40:49,676 - werkzeug - WARNING -  * Debugger is active!
+2025-07-11 15:40:49,680 - werkzeug - INFO -  * Debugger PIN: 635-890-695
+2025-07-11 15:41:13,798 - werkzeug - INFO -  * Detected change in 'C:\\Health care\\backend\\services\\tb_detection\\mock_tb_service.py', reloading
+2025-07-11 15:41:13,849 - werkzeug - INFO -  * Restarting with stat
+2025-07-11 15:41:14,453 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-11 15:41:14,453 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-11 15:41:14,453 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-11 15:41:14,475 - werkzeug - WARNING -  * Debugger is active!
+2025-07-11 15:41:14,480 - werkzeug - INFO -  * Debugger PIN: 635-890-695
+2025-07-11 15:41:29,902 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:41:29] "GET /api/health HTTP/1.1" 200 -
+2025-07-11 15:41:33,054 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 15:41:33] "GET /tb-detection HTTP/1.1" 200 -
+2025-07-11 15:42:09,734 - werkzeug - INFO -  * Detected change in 'C:\\Health care\\backend\\services\\tb_detection\\tensorflow_tb_service.py', reloading
+2025-07-11 15:42:09,780 - werkzeug - INFO -  * Restarting with stat
+2025-07-11 15:42:10,371 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-11 15:42:10,372 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-11 15:42:10,372 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-11 15:42:10,393 - werkzeug - WARNING -  * Debugger is active!
+2025-07-11 15:42:10,396 - werkzeug - INFO -  * Debugger PIN: 635-890-695
+2025-07-11 15:42:41,578 - werkzeug - INFO -  * Detected change in 'C:\\Health care\\backend\\services\\tb_detection\\tensorflow_tb_service.py', reloading
+2025-07-11 15:42:41,624 - werkzeug - INFO -  * Restarting with stat
+2025-07-11 15:42:42,218 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-11 15:42:42,219 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-11 15:42:42,219 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-11 15:42:42,240 - werkzeug - WARNING -  * Debugger is active!
+2025-07-11 15:42:42,243 - werkzeug - INFO -  * Debugger PIN: 635-890-695

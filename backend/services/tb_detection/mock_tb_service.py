@@ -37,31 +37,92 @@ class MockTBDetectionModel:
     
     def predict(self, image_path):
         """
-        Mock prediction for testing purposes
+        Mock prediction with detailed X-ray analysis for testing purposes
 
         Args:
             image_path (str): Path to the chest X-ray image
 
         Returns:
-            dict: Mock prediction results with confidence scores
+            dict: Comprehensive mock prediction results with detailed analysis
         """
         try:
             # Generate mock prediction (for testing)
             predictions = ['Normal', 'Tuberculosis']
             prediction = random.choice(predictions)
-            
+
+            # Generate detailed analysis based on prediction
             if prediction == 'Tuberculosis':
                 confidence = random.uniform(0.75, 0.95)
                 normal_confidence = 1 - confidence
                 tb_confidence = confidence
                 risk_level = 'High' if confidence > 0.9 else 'Moderate'
-                recommendation = 'Immediate medical consultation recommended. Please consult a pulmonologist or TB specialist.'
+                recommendation = 'Immediate medical consultation recommended. Please consult a pulmonologist or TB specialist for further evaluation and treatment.'
+
+                # Detailed TB findings
+                detailed_findings = [
+                    "Bilateral upper lobe infiltrates detected",
+                    "Cavitary lesions present in right upper lobe",
+                    "Hilar lymphadenopathy observed",
+                    "Pleural thickening noted",
+                    "Tree-in-bud pattern visible"
+                ]
+
+                anatomical_analysis = {
+                    "lung_fields": "Bilateral involvement with upper lobe predominance",
+                    "heart_size": "Normal cardiac silhouette",
+                    "mediastinum": "Widened due to hilar lymphadenopathy",
+                    "pleura": "Bilateral pleural thickening",
+                    "bones": "No obvious bone abnormalities",
+                    "soft_tissues": "Normal soft tissue appearance"
+                }
+
+                severity_assessment = {
+                    "disease_extent": "Moderate to extensive",
+                    "cavity_presence": "Multiple cavities detected",
+                    "lymph_node_involvement": "Bilateral hilar lymphadenopathy",
+                    "pleural_involvement": "Present"
+                }
+
             else:
                 confidence = random.uniform(0.85, 0.98)
                 normal_confidence = confidence
                 tb_confidence = 1 - confidence
                 risk_level = 'Very Low' if confidence > 0.9 else 'Low'
-                recommendation = 'Chest X-ray appears normal. Continue regular health monitoring.'
+                recommendation = 'Chest X-ray appears normal. Continue regular health monitoring and maintain good respiratory hygiene.'
+
+                # Normal findings
+                detailed_findings = [
+                    "Clear lung fields bilaterally",
+                    "Normal cardiac silhouette",
+                    "No evidence of consolidation",
+                    "Normal hilar structures",
+                    "No pleural effusion"
+                ]
+
+                anatomical_analysis = {
+                    "lung_fields": "Clear and well-expanded bilaterally",
+                    "heart_size": "Normal size and position",
+                    "mediastinum": "Normal mediastinal contours",
+                    "pleura": "No pleural abnormalities",
+                    "bones": "Normal bone structures",
+                    "soft_tissues": "Normal soft tissue appearance"
+                }
+
+                severity_assessment = {
+                    "disease_extent": "No disease detected",
+                    "cavity_presence": "No cavities present",
+                    "lymph_node_involvement": "Normal hilar structures",
+                    "pleural_involvement": "None"
+                }
+
+            # Technical analysis
+            technical_quality = {
+                "image_quality": random.choice(["Excellent", "Good", "Adequate"]),
+                "positioning": "Adequate PA view",
+                "inspiration": "Good inspiratory effort",
+                "penetration": "Appropriate exposure",
+                "artifacts": "No significant artifacts"
+            }
 
             return {
                 'prediction': prediction,
@@ -70,6 +131,10 @@ class MockTBDetectionModel:
                 'tb_confidence': tb_confidence,
                 'risk_level': risk_level,
                 'recommendation': recommendation,
+                'detailed_findings': detailed_findings,
+                'anatomical_analysis': anatomical_analysis,
+                'severity_assessment': severity_assessment,
+                'technical_quality': technical_quality,
                 'model_accuracy': self.accuracy,
                 'analysis_timestamp': datetime.now().isoformat(),
                 'mock_mode': True
@@ -134,7 +199,7 @@ def upload_and_predict():
         except Exception as e:
             logger.warning(f"Could not encode image: {e}")
         
-        # Create detailed response
+        # Create comprehensive detailed response
         response = {
             'success': True,
             'prediction': result['prediction'],
@@ -148,6 +213,12 @@ def upload_and_predict():
                 'analysis_timestamp': result.get('analysis_timestamp'),
                 'filename': filename,
                 'mock_mode': True
+            },
+            'detailed_analysis': {
+                'findings': result.get('detailed_findings', []),
+                'anatomical_analysis': result.get('anatomical_analysis', {}),
+                'severity_assessment': result.get('severity_assessment', {}),
+                'technical_quality': result.get('technical_quality', {})
             }
         }
         
