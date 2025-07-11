@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Health Assistant - Healthcare Portal</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --chat-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        .ai-header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 4rem 0;
+            margin-bottom: 2rem;
+            border-radius: 0 0 50px 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        }
+
+        .ai-header .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .ai-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .chat-main-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .chat-container {
+            height: 600px;
+            background: white;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            background: var(--chat-bg);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .chat-header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 10px solid #764ba2;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+            background: linear-gradient(to bottom, #f8f9ff, #ffffff);
+        }
+
+        .message {
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .ai-avatar {
+            background: var(--success-gradient);
+            color: white;
+        }
+
+        .user-avatar {
+            background: var(--secondary-gradient);
+            color: white;
+            order: 2;
+            margin-right: 0;
+            margin-left: 1rem;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 1rem 1.5rem;
+            border-radius: 20px;
+            position: relative;
+            word-wrap: break-word;
+        }
+
+        .ai-message .message-content {
+            background: white;
+            border: 2px solid #e3f2fd;
+            color: #333;
+        }
+
+        .user-message {
+            flex-direction: row-reverse;
+        }
+
+        .user-message .message-content {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            margin-top: 0.5rem;
+        }
+
+        .chat-input-container {
+            padding: 1.5rem;
+            background: white;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .chat-input {
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .chat-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            background: white;
+        }
+
+        .send-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .quick-questions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .quick-question {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border: none;
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #1976d2;
+        }
+
+        .quick-question:hover {
+            background: var(--primary-gradient);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 1rem;
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+
+        .typing-dots {
+            display: inline-block;
+        }
+
+        .typing-dots span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #667eea;
+            margin: 0 2px;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        .emergency-message {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            border: 2px solid #ff6b6b;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 107, 107, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); }
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+            border: 1px solid #e9ecef;
+            border-radius: 18px;
+            margin-right: auto;
+            max-width: 80px;
+        }
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+        .typing-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #6c757d;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+        .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        .config-section {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        .status-configured {
+            background: rgba(40, 167, 69, 0.2);
+            color: #155724;
+            border: 1px solid #28a745;
+        }
+        .status-not-configured {
+            background: rgba(220, 53, 69, 0.2);
+            color: #721c24;
+            border: 1px solid #dc3545;
+        }
+        .quick-questions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .quick-question {
+            background: #e9ecef;
+            border: 1px solid #ced4da;
+            border-radius: 20px;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+        .quick-question:hover {
+            background: #007bff;
+            color: white;
+            transform: translateY(-2px);
+        }
+        .message-timestamp {
+            font-size: 0.75em;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="/dashboard">
+                <i class="fas fa-lungs me-2"></i> TB Detection Platform
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/tb-detection">TB Detection</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/ai-assistant">AI Assistant</a>
+                    </li>
+                    <li class="nav-item">
+                        <button class="btn btn-outline-light btn-sm ms-2" onclick="logout()">
+                            <i class="fas fa-sign-out-alt me-1"></i>Logout
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- AI Assistant Header -->
+    <div class="ai-header">
+        <div class="container text-center">
+            <div class="ai-icon">
+                <i class="fas fa-robot"></i>
+            </div>
+            <h1 class="display-3 mb-3 fw-bold">AI Health Assistant</h1>
+            <p class="lead mb-4">Your intelligent healthcare companion for medical questions and wellness guidance</p>
+            <div class="d-flex justify-content-center gap-3">
+                <div class="badge bg-light text-dark px-3 py-2 rounded-pill">
+                    <i class="fas fa-brain me-2"></i>AI Powered
+                </div>
+                <div class="badge bg-light text-dark px-3 py-2 rounded-pill">
+                    <i class="fas fa-shield-alt me-2"></i>Safe & Reliable
+                </div>
+                <div class="badge bg-light text-dark px-3 py-2 rounded-pill">
+                    <i class="fas fa-clock me-2"></i>24/7 Available
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="chat-main-container">
+            <!-- Main Chat Interface -->
+            <div class="chat-container">
+                <!-- Chat Header -->
+                <div class="chat-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-comments me-2"></i>
+                        Chat with AI Health Assistant
+                    </h4>
+                    <small class="opacity-75">Ask me anything about health and wellness</small>
+                </div>
+
+                <!-- Chat Messages -->
+                <div id="chatMessages" class="chat-messages">
+                    <!-- Welcome Message -->
+                    <div class="message ai-message">
+                        <div class="message-avatar ai-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="message-content">
+                            <strong>AI Health Assistant</strong>
+                            <p class="mb-2">Hello! 👋 I'm your AI Health Assistant. I'm here to help you with:</p>
+                            <ul class="mb-3">
+                                <li>General health questions</li>
+                                <li>Wellness and lifestyle guidance</li>
+                                <li>Basic symptom information (educational only)</li>
+                                <li>Medication general information</li>
+                                <li>Mental health resources</li>
+                                <li>Preventive care tips</li>
+                            </ul>
+                            <div class="alert alert-warning mb-0">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <strong>Important:</strong> I provide general information only and cannot replace professional medical advice. For medical emergencies, call 911 immediately.
+                            </div>
+                            <div class="message-time">Just now</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Typing Indicator -->
+                <div id="typingIndicator" class="typing-indicator">
+                    <div class="typing-dots">
+                        AI is typing<span>.</span><span>.</span><span>.</span>
+                    </div>
+                </div>
+
+                <!-- Chat Input -->
+                <div class="chat-input-container">
+                    <div class="input-group">
+                        <input type="text" id="messageInput" class="form-control chat-input"
+                               placeholder="Ask me about your health concerns..."
+                               onkeypress="handleKeyPress(event)">
+                        <button class="send-btn" onclick="sendMessage()">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+
+                    <!-- Quick Questions -->
+                    <div class="quick-questions">
+                        <button class="quick-question" onclick="askQuickQuestion('What are the symptoms of flu?')">
+                            Flu symptoms
+                        </button>
+                        <button class="quick-question" onclick="askQuickQuestion('How to maintain a healthy diet?')">
+                            Healthy diet tips
+                        </button>
+                        <button class="quick-question" onclick="askQuickQuestion('What is a normal blood pressure?')">
+                            Blood pressure
+                        </button>
+                        <button class="quick-question" onclick="askQuickQuestion('How much water should I drink daily?')">
+                            Daily water intake
+                        </button>
+                        <button class="quick-question" onclick="askQuickQuestion('What are signs of stress?')">
+                            Stress symptoms
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Features Section -->
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h5 class="mb-3">AI-Powered Intelligence</h5>
+                <p class="text-muted">Advanced AI technology provides accurate, evidence-based health information and personalized guidance.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h5 class="mb-3">Safe & Reliable</h5>
+                <p class="text-muted">All information is based on medical literature and guidelines. Always encourages professional consultation when needed.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h5 class="mb-3">24/7 Availability</h5>
+                <p class="text-muted">Get instant health guidance anytime, anywhere. No appointments needed, always here to help.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-user-md"></i>
+                </div>
+                <h5 class="mb-3">Medical Guidance</h5>
+                <p class="text-muted">Helps you understand when to seek professional medical care and what questions to ask your doctor.</p>
+            </div>
+        </div>
+
+        <!-- Emergency Notice -->
+        <div class="text-center mt-5 p-4" style="background: linear-gradient(135deg, #ff6b6b, #ee5a52); border-radius: 25px; color: white;">
+            <h4 class="mb-3">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Medical Emergency?
+            </h4>
+            <p class="mb-3">If this is a medical emergency, don't wait - get help immediately!</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="tel:911" class="btn btn-light btn-lg">
+                    <i class="fas fa-phone me-2"></i>Call 911
+                </a>
+                <button class="btn btn-outline-light btn-lg" onclick="findNearestER()">
+                    <i class="fas fa-hospital me-2"></i>Find ER
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let chatMessages = document.getElementById('chatMessages');
+        let messageInput = document.getElementById('messageInput');
+        let typingIndicator = document.getElementById('typingIndicator');
+
+        // Handle Enter key press
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        // Send message function
+        async function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            // Add user message to chat
+            addMessage(message, 'user');
+            messageInput.value = '';
+
+            // Show typing indicator
+            showTyping();
+
+            try {
+                const response = await fetch('/ai-assistant/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: message })
+                });
+
+                const data = await response.json();
+                
+                // Hide typing indicator
+                hideTyping();
+
+                if (data.response) {
+                    addMessage(data.response, 'ai', data.type);
+                } else {
+                    addMessage('Sorry, I encountered an error. Please try again.', 'ai', 'error');
+                }
+            } catch (error) {
+                hideTyping();
+                addMessage('Sorry, I\'m having trouble connecting. Please try again later.', 'ai', 'error');
+            }
+        }
+
+        // Send quick question
+        function askQuickQuestion(question) {
+            messageInput.value = question;
+            sendMessage();
+        }
+
+        // Add message to chat
+        function addMessage(text, sender, type = 'normal') {
+            const messageDiv = document.createElement('div');
+            const timestamp = new Date().toLocaleTimeString();
+
+            if (sender === 'user') {
+                messageDiv.className = 'message user-message';
+                messageDiv.innerHTML = `
+                    <div class="message-avatar user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="message-content">
+                        ${text}
+                        <div class="message-time">${timestamp}</div>
+                    </div>
+                `;
+            } else {
+                let className = 'message ai-message';
+                if (type === 'emergency') {
+                    className = 'message emergency-message';
+                }
+                messageDiv.className = className;
+                messageDiv.innerHTML = `
+                    <div class="message-avatar ai-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        ${text.replace(/\n/g, '<br>')}
+                        <div class="message-time">${timestamp}</div>
+                    </div>
+                `;
+            }
+
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Show typing indicator
+        function showTyping() {
+            typingIndicator.style.display = 'block';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Hide typing indicator
+        function hideTyping() {
+            typingIndicator.style.display = 'none';
+        }
+
+        // Find nearest emergency room
+        function findNearestER() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    const url = `https://www.google.com/maps/search/emergency+room+near+me/@${lat},${lng},15z`;
+                    window.open(url, '_blank');
+                }, function() {
+                    // Fallback if geolocation fails
+                    window.open('https://www.google.com/maps/search/emergency+room+near+me', '_blank');
+                });
+            } else {
+                window.open('https://www.google.com/maps/search/emergency+room+near+me', '_blank');
+            }
+        }
+
+        // Clear chat
+        async function clearChat() {
+            if (confirm('Are you sure you want to clear the chat history?')) {
+                try {
+                    await fetch('/ai-assistant/api/clear-history', { method: 'POST' });
+                    location.reload();
+                } catch (error) {
+                    alert('Failed to clear chat history');
+                }
+            }
+        }
+
+        // Download chat
+        function downloadChat() {
+            const messages = Array.from(chatContainer.children)
+                .filter(el => el.classList.contains('message'))
+                .map(el => el.textContent)
+                .join('\n\n');
+            
+            const blob = new Blob([messages], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `health-chat-${new Date().toISOString().split('T')[0]}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+
+
+        // Authentication functions
+        function checkAuthentication() {
+            const sessionToken = localStorage.getItem('session_token');
+            if (!sessionToken) {
+                window.location.href = '/';
+                return false;
+            }
+            return true;
+        }
+
+        function logout() {
+            const sessionToken = localStorage.getItem('session_token');
+
+            if (sessionToken) {
+                fetch('http://127.0.0.1:5001/api/auth/logout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ session_token: sessionToken })
+                }).catch(error => console.log('Logout API call failed'));
+            }
+
+            localStorage.removeItem('session_token');
+            localStorage.removeItem('user_data');
+            window.location.href = '/';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!checkAuthentication()) {
+                return;
+            }
+
+            // Focus on message input
+            messageInput.focus();
+        });
+    </script>
+</body>
+</html>

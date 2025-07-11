@@ -1,0 +1,58 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual Environment
+venv/
+env/
+.env
+ai assist/
+Disease Diagnosis/
+
+# Large model files (use Git LFS)
+*.h5
+*.pkl
+*.dll
+*.lib
+*.pyd
+
+# Database
+*.db
+*.sqlite3
+
+# Logs
+logs/
+*.log
+
+# Uploads
+uploads/
+*.jpg
+*.jpeg
+*.png
+*.gif
+
+# Environment variables
+.env
+
+# Node.js
+node_modules/
+npm-debug.log*
+
+# Build outputs
+build/
+dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Model files (large files)
+*.pth
+*.h5
