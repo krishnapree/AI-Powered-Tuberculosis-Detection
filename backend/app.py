@@ -66,17 +66,21 @@ except ImportError as e:
     print(f"Auth service not available: {e}")
     AUTH_SERVICE_AVAILABLE = False
 
-# Configure logging
-import os
-os.makedirs('logs', exist_ok=True)  # Create logs directory if it doesn't exist
+# Configure logging (with error handling for deployment)
+try:
+    os.makedirs('logs', exist_ok=True)
+    log_handlers = [
+        logging.FileHandler('logs/app.log'),
+        logging.StreamHandler(sys.stdout)
+    ]
+except (PermissionError, OSError):
+    # If we can't write to logs directory, just use stdout
+    log_handlers = [logging.StreamHandler(sys.stdout)]
 
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('logs/app.log'),
-        logging.StreamHandler(sys.stdout)
-    ]
+    handlers=log_handlers
 )
 logger = logging.getLogger(__name__)
 
@@ -97,10 +101,17 @@ def create_app(config_name='default'):
         }
     })
 
-    # Ensure required directories exist
-    os.makedirs('logs', exist_ok=True)
-    os.makedirs('uploads', exist_ok=True)
-    os.makedirs('data', exist_ok=True)
+    # Ensure required directories exist (with error handling for deployment)
+    try:
+        os.makedirs('logs', exist_ok=True)
+        os.makedirs('uploads', exist_ok=True)
+        os.makedirs('data', exist_ok=True)
+    except PermissionError:
+        # On some deployment platforms, we might not have write permissions
+        # Log the issue but continue
+        print("Warning: Could not create directories (permission denied)")
+    except Exception as e:
+        print(f"Warning: Directory creation failed: {e}")
 
     # Track service availability
     services_status = {
@@ -145,17 +156,17 @@ def create_app(config_name='default'):
         """AI Assistant page"""
         return render_template('ai_assistant.html')
 
-    @app.route('/tb-detection')
-    def tb_detection_page():
-        """TB Detection service page"""
-        return render_template('tb_detection.html')
+    # Add favicon route to prevent 404 errors
+    @app.route('/favicon.ico')
+    def favicon():
+        """Serve favicon - return empty response to prevent 404"""
+        return '', 204
 
-    # Heart Rate Monitoring page removed
-
-    @app.route('/ai-assistant')
-    def ai_assistant_page():
-        """AI Assistant service page"""
-        return render_template('ai_assistant.html')
+    # Add static file serving for production
+    @app.route('/static/<path:filename>')
+    def static_files(filename):
+        """Serve static files"""
+        return send_from_directory('../frontend/static', filename)
 
     # Register API routes
     @app.route('/api/health', methods=['GET'])
@@ -202,11 +213,17 @@ def create_app(config_name='default'):
 
     @app.errorhandler(500)
     def internal_error(error):
+        logger.error(f"Internal server error: {error}")
         return jsonify({'error': 'Internal server error'}), 500
 
     @app.errorhandler(400)
     def bad_request(error):
         return jsonify({'error': 'Bad request'}), 400
+
+    @app.errorhandler(502)
+    def bad_gateway(error):
+        logger.error(f"Bad gateway error: {error}")
+        return jsonify({'error': 'Service temporarily unavailable'}), 502
 
     return app
 

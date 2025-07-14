@@ -27,7 +27,12 @@ class AuthService:
     
     def init_database(self):
         """Initialize the users database"""
-        os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+        try:
+            os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+        except (PermissionError, OSError) as e:
+            print(f"Warning: Could not create database directory: {e}")
+            # Try to use a temporary directory or current directory
+            self.db_path = 'users.db'
         
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
