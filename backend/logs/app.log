@@ -1278,3 +1278,277 @@
 2025-07-11 19:51:58,500 - werkzeug - WARNING -  * Debugger is active!
 2025-07-11 19:51:58,507 - werkzeug - INFO -  * Debugger PIN: 635-890-695
 2025-07-11 19:52:26,135 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 19:52:26] "GET /api/tb-detection/model-info HTTP/1.1" 200 -
+2025-07-12 13:02:01,772 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-12 13:02:01,772 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-12 13:02:01,772 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-12 13:02:01,947 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.1.5:5001
+2025-07-12 13:02:01,947 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-12 13:02:01,949 - werkzeug - INFO -  * Restarting with stat
+2025-07-12 13:02:06,747 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-12 13:02:06,747 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-12 13:02:06,747 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-12 13:02:06,878 - werkzeug - WARNING -  * Debugger is active!
+2025-07-12 13:02:06,884 - werkzeug - INFO -  * Debugger PIN: 635-890-695
+2025-07-12 13:02:27,759 - werkzeug - INFO - 127.0.0.1 - - [12/Jul/2025 13:02:27] "GET /api/tb-detection/model-info HTTP/1.1" 200 -
+2025-07-12 13:07:46,120 - werkzeug - INFO -  * Detected change in 'C:\\Health care\\backend\\models\\train_95_accuracy_advanced.py', reloading
+2025-07-12 13:07:48,611 - werkzeug - INFO -  * Restarting with stat
+2025-07-12 13:07:58,314 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-12 13:07:58,314 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-12 13:07:58,314 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-12 13:07:58,535 - werkzeug - WARNING -  * Debugger is active!
+2025-07-12 13:07:58,556 - werkzeug - INFO -  * Debugger PIN: 635-890-695
+2025-07-12 22:34:34,076 - werkzeug - INFO -  * Detected change in 'C:\\Health care\\backend\\services\\tb_detection\\tensorflow_tb_service.py', reloading
+2025-07-12 22:34:38,573 - werkzeug - INFO -  * Restarting with stat
+2025-07-12 22:34:48,840 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-12 22:34:48,840 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-12 22:34:48,841 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-12 22:34:49,038 - werkzeug - WARNING -  * Debugger is active!
+2025-07-12 22:34:49,054 - werkzeug - INFO -  * Debugger PIN: 635-890-695
+2025-07-12 22:35:02,260 - werkzeug - INFO -  * Detected change in 'C:\\Health care\\backend\\services\\tb_detection\\tensorflow_tb_service.py', reloading
+2025-07-12 22:35:03,405 - werkzeug - INFO -  * Restarting with stat
+2025-07-12 22:35:10,763 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-12 22:35:10,763 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-12 22:35:10,763 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-12 22:35:10,916 - werkzeug - WARNING -  * Debugger is active!
+2025-07-12 22:35:10,923 - werkzeug - INFO -  * Debugger PIN: 635-890-695
+2025-07-12 22:36:19,469 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-12 22:36:19,470 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-12 22:36:19,470 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-12 22:36:19,686 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.1.5:5001
+2025-07-12 22:36:19,687 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-12 22:36:19,689 - werkzeug - INFO -  * Restarting with stat
+2025-07-12 22:36:25,501 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-12 22:36:25,501 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-12 22:36:25,501 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-12 22:36:25,678 - werkzeug - WARNING -  * Debugger is active!
+2025-07-12 22:36:25,686 - werkzeug - INFO -  * Debugger PIN: 635-890-695
+2025-07-12 22:36:46,718 - werkzeug - INFO - 127.0.0.1 - - [12/Jul/2025 22:36:46] "GET /api/tb-detection/model-info HTTP/1.1" 200 -
+2025-07-12 22:41:18,986 - werkzeug - INFO - 127.0.0.1 - - [12/Jul/2025 22:41:18] "GET / HTTP/1.1" 200 -
+2025-07-12 22:41:19,315 - werkzeug - INFO - 127.0.0.1 - - [12/Jul/2025 22:41:19] "POST /api/auth/verify HTTP/1.1" 200 -
+2025-07-12 22:41:19,327 - werkzeug - INFO - 127.0.0.1 - - [12/Jul/2025 22:41:19] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-07-12 22:41:19,468 - werkzeug - INFO - 127.0.0.1 - - [12/Jul/2025 22:41:19] "[36mGET /dashboard HTTP/1.1[0m" 304 -
+2025-07-12 22:41:19,624 - werkzeug - INFO - 127.0.0.1 - - [12/Jul/2025 22:41:19] "GET /api/health HTTP/1.1" 200 -
+2025-07-12 22:41:22,385 - werkzeug - INFO - 127.0.0.1 - - [12/Jul/2025 22:41:22] "GET /tb-detection HTTP/1.1" 200 -
+2025-07-12 22:41:34,002 - werkzeug - INFO - 127.0.0.1 - - [12/Jul/2025 22:41:34] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-12 22:41:35,129 - werkzeug - INFO - 127.0.0.1 - - [12/Jul/2025 22:41:35] "GET /api/health HTTP/1.1" 200 -
+2025-07-12 22:41:43,633 - werkzeug - INFO - 127.0.0.1 - - [12/Jul/2025 22:41:43] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-12 22:41:48,161 - werkzeug - INFO - 127.0.0.1 - - [12/Jul/2025 22:41:48] "GET /api/tb-detection/model-info HTTP/1.1" 200 -
+2025-07-12 22:41:55,957 - werkzeug - INFO - 127.0.0.1 - - [12/Jul/2025 22:41:55] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-12 22:42:10,281 - werkzeug - INFO - 127.0.0.1 - - [12/Jul/2025 22:42:10] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-12 22:49:23,693 - werkzeug - INFO -  * Detected change in 'C:\\Health care\\backend\\app.py', reloading
+2025-07-12 22:49:27,879 - werkzeug - INFO -  * Restarting with stat
+2025-07-12 22:49:36,655 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-12 22:49:36,655 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-12 22:49:36,655 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-12 22:49:36,852 - werkzeug - WARNING -  * Debugger is active!
+2025-07-12 22:49:36,868 - werkzeug - INFO -  * Debugger PIN: 635-890-695
+2025-07-12 22:49:39,920 - werkzeug - INFO -  * Detected change in 'C:\\Health care\\backend\\app.py', reloading
+2025-07-12 22:49:40,909 - werkzeug - INFO -  * Restarting with stat
+2025-07-12 22:49:46,150 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-12 22:49:46,150 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-12 22:49:46,150 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-12 22:49:46,371 - werkzeug - WARNING -  * Debugger is active!
+2025-07-12 22:49:46,376 - werkzeug - INFO -  * Debugger PIN: 635-890-695
+2025-07-12 22:50:53,081 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-12 22:50:53,081 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-12 22:50:53,082 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-12 22:50:53,370 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.1.5:5001
+2025-07-12 22:50:53,370 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-12 22:50:53,372 - werkzeug - INFO -  * Restarting with stat
+2025-07-12 22:50:58,948 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-12 22:50:58,949 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-12 22:50:58,949 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-12 22:50:59,107 - werkzeug - WARNING -  * Debugger is active!
+2025-07-12 22:50:59,114 - werkzeug - INFO -  * Debugger PIN: 635-890-695
+2025-07-12 22:51:30,237 - werkzeug - INFO - 127.0.0.1 - - [12/Jul/2025 22:51:30] "GET / HTTP/1.1" 200 -
+2025-07-12 22:51:30,452 - werkzeug - INFO - 127.0.0.1 - - [12/Jul/2025 22:51:30] "POST /api/auth/verify HTTP/1.1" 200 -
+2025-07-12 22:51:30,587 - werkzeug - INFO - 127.0.0.1 - - [12/Jul/2025 22:51:30] "[36mGET /dashboard HTTP/1.1[0m" 304 -
+2025-07-12 22:51:30,701 - werkzeug - INFO - 127.0.0.1 - - [12/Jul/2025 22:51:30] "GET /api/health HTTP/1.1" 200 -
+2025-07-12 22:51:33,177 - werkzeug - INFO - 127.0.0.1 - - [12/Jul/2025 22:51:33] "GET /tb-detection HTTP/1.1" 200 -
+2025-07-12 22:51:41,670 - werkzeug - INFO - 127.0.0.1 - - [12/Jul/2025 22:51:41] "GET /api/health HTTP/1.1" 200 -
+2025-07-12 22:51:52,782 - werkzeug - INFO - 127.0.0.1 - - [12/Jul/2025 22:51:52] "GET /api/tb-detection/model-info HTTP/1.1" 200 -
+2025-07-12 22:52:53,956 - werkzeug - INFO - 127.0.0.1 - - [12/Jul/2025 22:52:53] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-12 22:53:41,176 - werkzeug - INFO - 127.0.0.1 - - [12/Jul/2025 22:53:41] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-12 22:53:49,676 - werkzeug - INFO - 127.0.0.1 - - [12/Jul/2025 22:53:49] "GET /tb-detection HTTP/1.1" 200 -
+2025-07-12 22:53:50,419 - werkzeug - INFO - 127.0.0.1 - - [12/Jul/2025 22:53:50] "GET /tb-detection HTTP/1.1" 200 -
+2025-07-12 23:02:24,214 - werkzeug - INFO - 127.0.0.1 - - [12/Jul/2025 23:02:24] "GET /tb-detection HTTP/1.1" 200 -
+2025-07-12 23:15:28,390 - werkzeug - INFO - 127.0.0.1 - - [12/Jul/2025 23:15:28] "GET / HTTP/1.1" 200 -
+2025-07-12 23:15:28,410 - werkzeug - INFO - 127.0.0.1 - - [12/Jul/2025 23:15:28] "POST /api/auth/logout HTTP/1.1" 200 -
+2025-07-14 10:16:58,179 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-14 10:16:58,180 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-14 10:16:58,180 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-14 10:16:58,321 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.1.5:5001
+2025-07-14 10:16:58,322 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-14 10:16:58,323 - werkzeug - INFO -  * Restarting with stat
+2025-07-14 10:17:02,924 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-14 10:17:02,925 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-14 10:17:02,925 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-14 10:17:03,065 - werkzeug - WARNING -  * Debugger is active!
+2025-07-14 10:17:03,072 - werkzeug - INFO -  * Debugger PIN: 847-806-415
+2025-07-14 10:17:37,547 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 10:17:37] "[33mGET /api/tb/model-info HTTP/1.1[0m" 404 -
+2025-07-14 10:18:38,190 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 10:18:38] "GET /api/tb-detection/model-info HTTP/1.1" 200 -
+2025-07-14 10:19:34,856 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 10:19:34] "GET / HTTP/1.1" 200 -
+2025-07-14 10:19:35,488 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 10:19:35] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-07-14 10:19:52,961 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 10:19:52] "[31m[1mPOST /api/auth/login HTTP/1.1[0m" 401 -
+2025-07-14 10:19:58,846 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 10:19:58] "[31m[1mPOST /api/auth/login HTTP/1.1[0m" 401 -
+2025-07-14 10:20:00,056 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 10:20:00] "[31m[1mPOST /api/auth/login HTTP/1.1[0m" 401 -
+2025-07-14 10:20:00,484 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 10:20:00] "[31m[1mPOST /api/auth/login HTTP/1.1[0m" 401 -
+2025-07-14 10:20:00,638 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 10:20:00] "[31m[1mPOST /api/auth/login HTTP/1.1[0m" 401 -
+2025-07-14 10:21:09,979 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 10:21:09] "[31m[1mPOST /api/auth/register HTTP/1.1[0m" 400 -
+2025-07-14 10:21:15,693 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 10:21:15] "[31m[1mPOST /api/auth/register HTTP/1.1[0m" 400 -
+2025-07-14 10:21:37,036 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 10:21:37] "[31m[1mPOST /api/auth/register HTTP/1.1[0m" 400 -
+2025-07-14 10:21:37,908 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 10:21:37] "[31m[1mPOST /api/auth/register HTTP/1.1[0m" 400 -
+2025-07-14 20:12:41,531 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-14 20:12:41,532 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-14 20:12:41,532 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-14 20:12:41,709 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.1.5:5001
+2025-07-14 20:12:41,709 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-14 20:12:41,712 - werkzeug - INFO -  * Restarting with stat
+2025-07-14 20:12:45,471 - __main__ - INFO - Healthcare Portal Backend API Server starting...
+2025-07-14 20:12:45,471 - __main__ - INFO - API endpoints available at http://localhost:5000/api/
+2025-07-14 20:12:45,471 - __main__ - INFO - Health check: http://localhost:5000/api/health
+2025-07-14 20:12:45,578 - werkzeug - WARNING -  * Debugger is active!
+2025-07-14 20:12:45,586 - werkzeug - INFO -  * Debugger PIN: 847-806-415
+2025-07-14 20:13:18,190 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:13:18] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:13:54,988 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:13:54] "GET /api/tb-detection/model-info HTTP/1.1" 200 -
+2025-07-14 20:14:06,406 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:14:06] "GET / HTTP/1.1" 200 -
+2025-07-14 20:14:06,718 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:14:06] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-07-14 20:19:24,179 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:19:24] "[31m[1mPOST /api/auth/login HTTP/1.1[0m" 401 -
+2025-07-14 20:19:31,571 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:19:31] "[31m[1mPOST /api/auth/login HTTP/1.1[0m" 401 -
+2025-07-14 20:19:33,088 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:19:33] "[31m[1mPOST /api/auth/login HTTP/1.1[0m" 401 -
+2025-07-14 20:19:36,590 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:19:36] "[31m[1mPOST /api/auth/login HTTP/1.1[0m" 401 -
+2025-07-14 20:19:59,637 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:19:59] "[31m[1mPOST /api/auth/register HTTP/1.1[0m" 400 -
+2025-07-14 20:20:04,534 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:20:04] "[31m[1mPOST /api/auth/register HTTP/1.1[0m" 400 -
+2025-07-14 20:20:17,470 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:20:17] "[31m[1mPOST /api/auth/register HTTP/1.1[0m" 400 -
+2025-07-14 20:20:23,143 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:20:23] "POST /api/auth/register HTTP/1.1" 200 -
+2025-07-14 20:20:34,280 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:20:34] "POST /api/auth/login HTTP/1.1" 200 -
+2025-07-14 20:20:35,950 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:20:35] "GET /dashboard HTTP/1.1" 200 -
+2025-07-14 20:20:36,525 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:20:36] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:20:41,513 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:20:41] "GET /tb-detection HTTP/1.1" 200 -
+2025-07-14 20:20:58,496 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:20:58] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-14 20:21:09,188 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:21:09] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-14 20:21:13,744 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:21:13] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-14 20:22:39,330 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:22:39] "GET /tb-detection HTTP/1.1" 200 -
+2025-07-14 20:22:51,685 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:22:51] "GET /tb-detection HTTP/1.1" 200 -
+2025-07-14 20:25:19,175 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:25:19] "GET /tb-detection HTTP/1.1" 200 -
+2025-07-14 20:25:41,318 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:25:41] "GET /tb-detection HTTP/1.1" 200 -
+2025-07-14 20:25:55,908 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:25:55] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-14 20:26:08,799 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:26:08] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-14 20:26:28,427 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:26:28] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-14 20:26:36,746 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:26:36] "GET /ai-assistant HTTP/1.1" 200 -
+2025-07-14 20:26:39,411 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:26:39] "[33mPOST /ai-assistant/api/chat HTTP/1.1[0m" 404 -
+2025-07-14 20:26:44,528 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:26:44] "GET /tb-detection HTTP/1.1" 200 -
+2025-07-14 20:26:45,374 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:26:45] "[36mGET /dashboard HTTP/1.1[0m" 304 -
+2025-07-14 20:26:45,394 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:26:45] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:26:48,871 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:26:48] "[36mGET /dashboard HTTP/1.1[0m" 304 -
+2025-07-14 20:26:48,891 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:26:48] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:26:51,337 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:26:51] "GET /tb-detection HTTP/1.1" 200 -
+2025-07-14 20:26:57,176 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:26:57] "POST /api/tb-detection/upload HTTP/1.1" 200 -
+2025-07-14 20:27:01,852 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:27:01] "[36mGET /dashboard HTTP/1.1[0m" 304 -
+2025-07-14 20:27:01,875 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:27:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:27:31,888 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:27:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:28:01,888 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:28:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:28:31,881 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:28:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:29:01,891 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:29:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:29:31,885 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:29:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:30:01,892 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:30:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:30:31,879 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:30:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:31:01,891 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:31:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:31:31,879 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:31:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:32:01,881 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:32:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:32:31,887 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:32:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:33:01,884 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:33:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:33:31,886 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:33:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:34:01,880 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:34:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:34:31,883 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:34:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:35:01,887 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:35:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:35:31,889 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:35:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:36:01,888 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:36:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:36:31,893 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:36:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:37:01,891 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:37:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:37:31,883 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:37:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:38:01,881 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:38:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:38:31,890 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:38:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:39:01,883 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:39:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:39:31,878 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:39:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:40:01,884 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:40:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:40:31,890 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:40:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:41:01,882 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:41:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:41:31,889 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:41:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:42:01,890 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:42:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:42:31,888 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:42:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:43:01,893 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:43:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:43:31,887 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:43:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:44:01,892 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:44:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:44:31,879 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:44:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:45:01,891 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:45:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:45:31,894 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:45:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:46:01,879 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:46:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:46:31,886 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:46:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:47:01,885 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:47:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:47:31,882 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:47:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:48:01,894 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:48:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:48:31,887 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:48:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:49:01,879 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:49:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:49:31,884 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:49:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:50:01,889 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:50:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:50:31,890 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:50:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:51:01,881 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:51:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:51:31,881 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:51:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:52:01,883 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:52:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:52:31,891 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:52:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:53:01,891 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:53:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:53:31,886 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:53:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:54:01,887 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:54:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:54:31,893 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:54:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:55:01,886 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:55:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:55:31,877 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:55:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:56:01,883 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:56:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:56:31,891 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:56:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:57:01,885 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:57:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:57:31,886 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:57:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:58:01,878 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:58:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:58:31,882 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:58:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:59:01,889 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:59:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 20:59:31,892 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 20:59:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 21:00:01,878 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 21:00:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 21:00:31,879 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 21:00:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 21:01:01,885 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 21:01:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 21:01:31,884 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 21:01:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 21:02:01,885 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 21:02:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 21:02:31,879 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 21:02:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 21:03:01,885 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 21:03:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 21:03:31,885 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 21:03:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 21:04:01,889 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 21:04:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 21:04:31,877 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 21:04:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 21:05:01,889 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 21:05:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 21:05:31,880 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 21:05:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 21:06:01,886 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 21:06:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 21:06:31,893 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 21:06:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 21:07:01,885 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 21:07:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 21:07:31,884 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 21:07:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 21:08:01,880 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 21:08:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 21:08:31,891 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 21:08:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 21:09:01,892 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 21:09:01] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 21:09:31,879 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 21:09:31] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 21:09:37,588 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 21:09:37] "[36mGET /dashboard HTTP/1.1[0m" 304 -
+2025-07-14 21:09:37,612 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 21:09:37] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 21:10:08,549 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 21:10:08] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 21:10:38,554 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 21:10:38] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 21:11:08,553 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 21:11:08] "GET /api/health HTTP/1.1" 200 -
+2025-07-14 21:11:38,554 - werkzeug - INFO - 127.0.0.1 - - [14/Jul/2025 21:11:38] "GET /api/health HTTP/1.1" 200 -

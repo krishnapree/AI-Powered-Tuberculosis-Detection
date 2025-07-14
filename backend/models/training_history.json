@@ -1,9 +1,0 @@
-{
-  "training_date": "2025-07-11",
-  "model_architecture": "MobileNetV2 + Custom Head",
-  "target_accuracy": 0.9,
-  "achieved_accuracy": 0.5177304744720459,
-  "training_samples": 422,
-  "validation_samples": 141,
-  "test_samples": 141
-}

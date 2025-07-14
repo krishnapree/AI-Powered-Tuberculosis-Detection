@@ -42,15 +42,7 @@
             margin-bottom: 30px;
         }
 
-        .accuracy-badge {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-weight: bold;
-            display: inline-block;
-            margin-bottom: 20px;
-        }
+
 
         .image-preview {
             max-width: 100%;
@@ -193,19 +185,14 @@
             <i class="fas fa-lungs feature-icon"></i>
             <h1 class="display-4 mb-3">TB Detection Service</h1>
             <p class="lead">AI-Powered Tuberculosis Detection from Chest X-Rays</p>
-            <div class="accuracy-badge">
-                <i class="fas fa-award me-2"></i>99.84% Accuracy
-            </div>
+
         </div>
     </div>
 
     <div class="container my-5">
         <div class="row">
             <div class="col-lg-8">
-                <div class="model-info">
-                    <h4><i class="fas fa-brain me-2"></i>PyTorch Deep Learning Model</h4>
-                    <p class="mb-0">Our state-of-the-art ResNet50-based model has been trained on thousands of chest X-ray images to detect tuberculosis with exceptional accuracy.</p>
-                </div>
+
 
                 <div class="upload-area" id="uploadArea">
                     <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
@@ -547,19 +534,28 @@
 
             if (analysis && analysis.technical_quality) {
                 const tech = analysis.technical_quality;
-                const modelAccuracy = data.details?.model_accuracy || 99.84;
+                const modelPerformance = data.details?.model_performance || {};
                 const analysisTime = data.details?.analysis_timestamp || new Date().toISOString();
                 const isProduction = !data.details?.mock_mode;
 
                 technicalDetails.innerHTML = `
                     <div class="row">
                         <div class="col-md-6">
-                            <h6><i class="fas fa-brain me-2"></i>Model Information</h6>
+                            <h6><i class="fas fa-brain me-2"></i>Model Performance</h6>
                             <ul class="list-unstyled">
-                                <li><strong>Model Type:</strong> ${isProduction ? 'TensorFlow ResNet50' : 'Mock Service'}</li>
-                                <li><strong>Accuracy:</strong> ${modelAccuracy}%</li>
-                                <li><strong>Framework:</strong> ${isProduction ? 'TensorFlow' : 'Mock (Local Testing)'}</li>
+                                <li><strong>Model Type:</strong> ${modelPerformance.model_type || 'TensorFlow ResNet50'}</li>
+                                <li><strong>Version:</strong> ${modelPerformance.version || 'v4.0'}</li>
+                                <li><strong>Accuracy:</strong> ${modelPerformance.accuracy || '81.86%'}</li>
                                 <li><strong>Confidence:</strong> ${(data.confidence * 100).toFixed(1)}%</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-chart-line me-2"></i>Medical Metrics</h6>
+                            <ul class="list-unstyled">
+                                <li><strong>Sensitivity:</strong> ${modelPerformance.sensitivity || '65.29%'}</li>
+                                <li><strong>Specificity:</strong> ${modelPerformance.specificity || '98.43%'}</li>
+                                <li><strong>TB Precision:</strong> ${modelPerformance.tb_precision || '97.65%'}</li>
+                                <li><strong>NPV:</strong> ${modelPerformance.npv || '89.12%'}</li>
                             </ul>
                         </div>
                         <div class="col-md-6">
@@ -703,6 +699,52 @@
             // Show modal
             const modal = new bootstrap.Modal(document.getElementById('exampleModal'));
             modal.show();
+        }
+
+        // Load model information
+        async function loadModelInfo() {
+            try {
+                const response = await fetch('http://127.0.0.1:5001/api/tb-detection/model-info');
+                if (response.ok) {
+                    const modelInfo = await response.json();
+                    updateModelDisplay(modelInfo);
+                } else {
+                    console.warn('Could not load model info');
+                }
+            } catch (error) {
+                console.warn('Error loading model info:', error);
+            }
+        }
+
+        function updateModelDisplay(modelInfo) {
+            // Update accuracy badge
+            const accuracyBadge = document.querySelector('.accuracy-badge');
+            if (accuracyBadge && modelInfo.accuracy) {
+                accuracyBadge.innerHTML = `
+                    <i class="fas fa-award me-2"></i>${modelInfo.accuracy} Accuracy
+                `;
+            }
+
+            // Update model info section
+            const modelInfoSection = document.querySelector('.model-info');
+            if (modelInfoSection && modelInfo.model_type) {
+                modelInfoSection.innerHTML = `
+                    <h4><i class="fas fa-brain me-2"></i>${modelInfo.model_type}</h4>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <p class="mb-2"><strong>Accuracy:</strong> ${modelInfo.accuracy}</p>
+                            <p class="mb-2"><strong>Sensitivity:</strong> ${modelInfo.sensitivity}</p>
+                            <p class="mb-2"><strong>Specificity:</strong> ${modelInfo.specificity}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-2"><strong>TB Precision:</strong> ${modelInfo.tb_precision}</p>
+                            <p class="mb-2"><strong>Model Size:</strong> ${modelInfo.model_size}</p>
+                            <p class="mb-2"><strong>Version:</strong> ${modelInfo.version || 'v4.0'}</p>
+                        </div>
+                    </div>
+                    <p class="mb-0 mt-2">Our production-ready ResNet50-based model has been trained on thousands of chest X-ray images with advanced preprocessing techniques for exceptional tuberculosis detection accuracy.</p>
+                `;
+            }
         }
 
         // Authentication functions

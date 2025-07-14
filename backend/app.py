@@ -88,8 +88,14 @@ def create_app(config_name='default'):
                 static_folder='../frontend/static')
     app.config.from_object(config[config_name])
 
-    # Enable CORS for frontend communication
-    CORS(app, origins=app.config['CORS_ORIGINS'])
+    # Enable CORS for frontend communication (allow all origins for development)
+    CORS(app, resources={
+        r"/*": {
+            "origins": ["*"],
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "allow_headers": ["Content-Type", "Authorization"]
+        }
+    })
 
     # Ensure required directories exist
     os.makedirs('logs', exist_ok=True)
@@ -128,6 +134,16 @@ def create_app(config_name='default'):
     def dashboard():
         """Main TB detection platform dashboard"""
         return send_from_directory('../frontend/public', 'index.html')
+
+    @app.route('/tb-detection')
+    def tb_detection():
+        """TB Detection page"""
+        return render_template('tb_detection.html')
+
+    @app.route('/ai-assistant')
+    def ai_assistant():
+        """AI Assistant page"""
+        return render_template('ai_assistant.html')
 
     @app.route('/tb-detection')
     def tb_detection_page():
