@@ -17,6 +17,8 @@ logging.basicConfig(
 )
 
 try:
+    print("Starting WSGI application...")
+
     # Import the Flask app
     from app import create_app
 
@@ -29,7 +31,20 @@ except Exception as e:
     print(f"Error creating WSGI application: {e}")
     import traceback
     traceback.print_exc()
-    raise
+
+    # Try to create a minimal Flask app as fallback
+    try:
+        from flask import Flask
+        app = Flask(__name__)
+
+        @app.route('/')
+        def error_page():
+            return f"Application startup error: {str(e)}", 500
+
+        print("Created fallback Flask app")
+    except Exception as e2:
+        print(f"Failed to create fallback app: {e2}")
+        raise e
 
 if __name__ == "__main__":
     app.run()

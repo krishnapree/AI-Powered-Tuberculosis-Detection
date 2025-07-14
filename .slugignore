@@ -1,4 +1,4 @@
-frontend/
+# frontend/ - REMOVED: Frontend is needed for templates
 *.md
 .git/
 .gitignore

@@ -32,6 +32,9 @@ TB_SERVICE_AVAILABLE = False
 TB_SERVICE_TYPE = "none"
 
 try:
+    # Try to import TensorFlow first
+    import tensorflow as tf
+    print(f"TensorFlow version: {tf.__version__}")
     from services.tb_detection.tensorflow_tb_service import tb_bp
     TB_SERVICE_AVAILABLE = True
     TB_SERVICE_TYPE = "tensorflow"
@@ -47,6 +50,16 @@ except ImportError as e:
         print("   Production deployment will use real TensorFlow model")
     except ImportError as e2:
         print(f"[ERROR] TB Detection service not available: {e2}")
+        TB_SERVICE_AVAILABLE = False
+except Exception as e:
+    print(f"Error loading TensorFlow service: {e}")
+    try:
+        from services.tb_detection.mock_tb_service import tb_bp
+        TB_SERVICE_AVAILABLE = True
+        TB_SERVICE_TYPE = "mock"
+        print("[WARNING] Fallback to Mock service due to TensorFlow error")
+    except Exception as e3:
+        print(f"[ERROR] All TB services failed: {e3}")
         TB_SERVICE_AVAILABLE = False
 
 # Heart Rate Monitoring service removed
@@ -87,9 +100,52 @@ logger = logging.getLogger(__name__)
 def create_app(config_name='default'):
     """Application factory pattern"""
     # Set up Flask app with frontend template and static directories
+    # Handle both local development and deployment paths
+
+    # Creating Flask app for deployment
+
+    # Try multiple possible paths for templates and static files
+    possible_template_paths = [
+        '../frontend/templates',  # Local development from backend/
+        'frontend/templates',     # Deployment from root
+        './frontend/templates',   # Alternative deployment path
+    ]
+
+    possible_static_paths = [
+        '../frontend/static',     # Local development from backend/
+        'frontend/static',        # Deployment from root
+        './frontend/static',      # Alternative deployment path
+        '../frontend/public',     # Try public folder as static
+        'frontend/public',        # Public folder from root
+        './frontend/public',      # Alternative public path
+    ]
+
+    template_folder = None
+    static_folder = None
+
+    # Find the correct template folder
+    for path in possible_template_paths:
+        if os.path.exists(path):
+            template_folder = os.path.abspath(path)  # Use absolute path
+            break
+
+    # Find the correct static folder
+    for path in possible_static_paths:
+        if os.path.exists(path):
+            static_folder = os.path.abspath(path)  # Use absolute path
+            break
+
+    if not template_folder:
+        print("Warning: No template folder found, using default")
+        template_folder = 'templates'
+
+    if not static_folder:
+        print("Warning: No static folder found, using default")
+        static_folder = 'static'
+
     app = Flask(__name__,
-                template_folder='../frontend/templates',
-                static_folder='../frontend/static')
+                template_folder=template_folder,
+                static_folder=static_folder)
     app.config.from_object(config[config_name])
 
     # Enable CORS for frontend communication (allow all origins for development)
@@ -144,7 +200,11 @@ def create_app(config_name='default'):
     @app.route('/dashboard')
     def dashboard():
         """Main TB detection platform dashboard"""
-        return send_from_directory('../frontend/public', 'index.html')
+        # Handle both local development and deployment paths
+        public_folder = '../frontend/public'
+        if not os.path.exists(public_folder):
+            public_folder = 'frontend/public'
+        return send_from_directory(public_folder, 'index.html')
 
     @app.route('/tb-detection')
     def tb_detection():
@@ -166,7 +226,11 @@ def create_app(config_name='default'):
     @app.route('/static/<path:filename>')
     def static_files(filename):
         """Serve static files"""
-        return send_from_directory('../frontend/static', filename)
+        # Handle both local development and deployment paths
+        static_folder_path = '../frontend/static'
+        if not os.path.exists(static_folder_path):
+            static_folder_path = 'frontend/static'
+        return send_from_directory(static_folder_path, filename)
 
     # Register API routes
     @app.route('/api/health', methods=['GET'])
@@ -227,11 +291,12 @@ def create_app(config_name='default'):
 
     return app
 
-if __name__ == '__main__':
-    # Create the Flask app
-    app = create_app(os.environ.get('FLASK_ENV', 'default'))
+# Create app for WSGI deployment (memory optimized)
+gc.collect()  # Force garbage collection
+app = create_app(os.environ.get('FLASK_ENV', 'production'))
 
-    # Run the application
+if __name__ == '__main__':
+    # Run the application directly (for local development)
     logger.info("Healthcare Portal Backend API Server starting...")
     logger.info("API endpoints available at http://localhost:5000/api/")
     logger.info("Health check: http://localhost:5000/api/health")
@@ -240,16 +305,9 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5001))
     host = os.environ.get('HOST', '0.0.0.0')  # Changed to 0.0.0.0 for deployment
 
-    # Memory optimization
-    gc.collect()
-
     app.run(
         host=host,
         port=port,
         debug=app.config.get('DEBUG', False),
         threaded=True  # Enable threading for better performance
     )
-
-# For Gunicorn deployment (memory optimized)
-gc.collect()  # Force garbage collection
-app = create_app(os.environ.get('FLASK_ENV', 'default'))

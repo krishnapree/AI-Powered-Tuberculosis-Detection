@@ -11,14 +11,14 @@ env/
 ai assist/
 Disease Diagnosis/
 
-# Large model files (use Git LFS) - but allow our TB model
-*.h5
-*.pkl
+# Large model files (use Git LFS) - but allow our TB models
 *.dll
 *.lib
 *.pyd
-# Allow our TB model
+# Allow our TB models for deployment
 !backend/models/pytorch_tb_model.pth
+!backend/models/*.h5
+!backend/models/*.tflite
 
 # Database
 *.db
@@ -55,10 +55,10 @@ dist/
 .DS_Store
 Thumbs.db
 
-# Model files (large files) - but allow our TB model
+# Model files (large files) - but allow our TB models
 *.pth
 !backend/models/pytorch_tb_model.pth
-*.h5
+# *.h5 - REMOVED: Allow .h5 files for deployment
 
 # Test files and documentation (except README.md)
 test_*.py
