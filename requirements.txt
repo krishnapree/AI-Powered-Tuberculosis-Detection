@@ -1,40 +1,18 @@
-# Core Flask Dependencies
 Flask==3.0.0
 Flask-CORS==4.0.0
 requests==2.31.0
 python-dotenv==1.0.0
 Werkzeug==3.0.1
-
-# Authentication & Security
 PyJWT==2.8.0
 bcrypt==4.1.2
-
-# AI & Machine Learning (GPU Support - Python 3.11 + CUDA 12.2)
-tensorflow==2.15.0  # Officially supports CUDA 12.2 + cuDNN 8.9
-
-# Image Processing & Computer Vision
-opencv-python-headless>=4.8.0
-Pillow>=10.0.0
-numpy>=1.21.0,<1.25.0
-
-# Data Science & Core ML
-pandas>=1.5.0
-scikit-learn>=1.2.0
-matplotlib>=3.6.0
-seaborn>=0.11.0
-
-# AI Assistant
-google-generativeai>=0.3.0
-
-# Advanced Training Dependencies (for 95%+ accuracy)
-albumentations>=1.3.0
-tqdm>=4.64.0
-
-# Utilities & Monitoring
-psutil>=5.9.0
-
-# Production Deployment
-gunicorn>=20.1.0
-
-# Fix packaging conflicts
-packaging>=21.0
+tensorflow-cpu==2.15.0
+opencv-python-headless==4.8.1.78
+Pillow==10.0.1
+numpy==1.24.4
+pandas==2.0.3
+scikit-learn==1.3.0
+google-generativeai==0.3.2
+psutil==5.9.5
+gunicorn==21.2.0
+packaging==23.2
+typing-extensions==4.12.2

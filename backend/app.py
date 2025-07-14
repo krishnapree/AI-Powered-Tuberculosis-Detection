@@ -35,18 +35,18 @@ try:
     from services.tb_detection.tensorflow_tb_service import tb_bp
     TB_SERVICE_AVAILABLE = True
     TB_SERVICE_TYPE = "tensorflow"
-    print("✅ TB Detection service loaded with TensorFlow (Production)")
+    print("[SUCCESS] TB Detection service loaded with TensorFlow (Production)")
 except ImportError as e:
     print(f"TensorFlow not available: {e}")
     try:
         from services.tb_detection.mock_tb_service import tb_bp
         TB_SERVICE_AVAILABLE = True
         TB_SERVICE_TYPE = "mock"
-        print("⚠️ TB Detection service loaded with Mock (Local Testing Only)")
+        print("[WARNING] TB Detection service loaded with Mock (Local Testing Only)")
         print("   Note: Mock service provides random predictions for testing UI/UX")
-        print("   Production deployment will use real TensorFlow model with 99.84% accuracy")
+        print("   Production deployment will use real TensorFlow model")
     except ImportError as e2:
-        print(f"❌ TB Detection service not available: {e2}")
+        print(f"[ERROR] TB Detection service not available: {e2}")
         TB_SERVICE_AVAILABLE = False
 
 # Heart Rate Monitoring service removed
@@ -112,17 +112,17 @@ def create_app(config_name='default'):
     # Register service blueprints
     if TB_SERVICE_AVAILABLE:
         app.register_blueprint(tb_bp, url_prefix='/api/tb-detection')
-        logger.info("✅ TB Detection service registered")
+        logger.info("[SUCCESS] TB Detection service registered")
 
     # Heart Rate Monitoring service removed
 
     if AI_SERVICE_AVAILABLE:
         app.register_blueprint(ai_health_bp, url_prefix='/api/ai-assistant')
-        logger.info("✅ AI Assistant service registered")
+        logger.info("[SUCCESS] AI Assistant service registered")
 
     if AUTH_SERVICE_AVAILABLE:
         app.register_blueprint(auth_bp, url_prefix='/api/auth')
-        logger.info("✅ Authentication service registered")
+        logger.info("[SUCCESS] Authentication service registered")
 
     # Frontend routes
     @app.route('/')
