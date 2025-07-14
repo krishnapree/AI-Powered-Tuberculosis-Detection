@@ -357,6 +357,11 @@
                     body: formData
                 });
 
+                // Check if response is ok
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
                 const data = await response.json();
                 loadingSpinner.style.display = 'none';
 
@@ -367,6 +372,7 @@
                 }
             } catch (error) {
                 loadingSpinner.style.display = 'none';
+                console.error('Upload error:', error);
                 displayError('Connection error: ' + error.message);
             }
         }
@@ -782,7 +788,6 @@
                 return;
             }
 
-            setupDragAndDrop();
             loadModelInfo();
         });
     </script>

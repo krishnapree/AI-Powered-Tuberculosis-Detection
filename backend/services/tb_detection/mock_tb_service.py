@@ -155,8 +155,19 @@ mock_detector = MockTBDetectionModel()
 UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static/uploads')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'bmp', 'tiff'}
 
-# Ensure upload directory exists
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+# Ensure upload directory exists with error handling
+try:
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+except (PermissionError, OSError) as e:
+    # Fallback to a temporary directory or current directory
+    logger.warning(f"Could not create upload directory {UPLOAD_FOLDER}: {e}")
+    UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
+    try:
+        os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+    except (PermissionError, OSError):
+        # Last resort: use current directory
+        UPLOAD_FOLDER = os.getcwd()
+        logger.warning(f"Using current directory for uploads: {UPLOAD_FOLDER}")
 
 def allowed_file(filename):
     """Check if file extension is allowed"""

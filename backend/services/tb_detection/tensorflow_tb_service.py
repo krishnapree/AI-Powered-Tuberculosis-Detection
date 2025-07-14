@@ -484,8 +484,19 @@ def get_tb_detector():
 UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static/uploads')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'bmp', 'tiff'}
 
-# Ensure upload directory exists
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+# Ensure upload directory exists with error handling
+try:
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+except (PermissionError, OSError) as e:
+    # Fallback to a temporary directory or current directory
+    logger.warning(f"Could not create upload directory {UPLOAD_FOLDER}: {e}")
+    UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
+    try:
+        os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+    except (PermissionError, OSError):
+        # Last resort: use current directory
+        UPLOAD_FOLDER = os.getcwd()
+        logger.warning(f"Using current directory for uploads: {UPLOAD_FOLDER}")
 
 def allowed_file(filename):
     """Check if file extension is allowed"""
@@ -525,33 +536,77 @@ def upload_and_predict():
     try:
         detector = get_tb_detector()
         if not detector:
-            return jsonify({'error': 'TB detection service not available'}), 503
+            logger.error("TB detector not available")
+            return jsonify({
+                'success': False,
+                'error': 'TB detection service not available'
+            }), 503
 
         # Check if file is present
         if 'file' not in request.files:
-            return jsonify({'error': 'No file uploaded'}), 400
+            return jsonify({
+                'success': False,
+                'error': 'No file uploaded'
+            }), 400
 
         file = request.files['file']
         if file.filename == '':
-            return jsonify({'error': 'No file selected'}), 400
+            return jsonify({
+                'success': False,
+                'error': 'No file selected'
+            }), 400
 
         # Validate file type
         if not allowed_file(file.filename):
-            return jsonify({'error': 'Invalid file type. Please upload PNG, JPG, JPEG, GIF, BMP, or TIFF files.'}), 400
+            return jsonify({
+                'success': False,
+                'error': 'Invalid file type. Please upload PNG, JPG, JPEG, GIF, BMP, or TIFF files.'
+            }), 400
 
         # Save uploaded file
-        filename = secure_filename(f"{uuid.uuid4()}_{file.filename}")
-        file_path = os.path.join(UPLOAD_FOLDER, filename)
-        file.save(file_path)
+        try:
+            filename = secure_filename(f"{uuid.uuid4()}_{file.filename}")
+            file_path = os.path.join(UPLOAD_FOLDER, filename)
+            file.save(file_path)
+            logger.info(f"File saved to: {file_path}")
+        except Exception as e:
+            logger.error(f"Error saving file: {e}")
+            return jsonify({
+                'success': False,
+                'error': f'Error saving file: {str(e)}'
+            }), 500
 
         # Validate if it's a chest X-ray
-        is_valid, validation_message = is_chest_xray(file_path)
-        if not is_valid:
-            os.remove(file_path)  # Clean up invalid file
-            return jsonify({'error': f'Invalid chest X-ray: {validation_message}'}), 400
+        try:
+            is_valid, validation_message = is_chest_xray(file_path)
+            if not is_valid:
+                os.remove(file_path)  # Clean up invalid file
+                return jsonify({
+                    'success': False,
+                    'error': f'Invalid chest X-ray: {validation_message}'
+                }), 400
+        except Exception as e:
+            logger.error(f"Error validating image: {e}")
+            return jsonify({
+                'success': False,
+                'error': f'Error validating image: {str(e)}'
+            }), 500
 
         # Make prediction
-        result = detector.predict(file_path)
+        try:
+            result = detector.predict(file_path)
+            logger.info(f"Prediction completed: {result.get('prediction', 'unknown')}")
+        except Exception as e:
+            logger.error(f"Error making prediction: {e}")
+            # Clean up file
+            try:
+                os.remove(file_path)
+            except:
+                pass
+            return jsonify({
+                'success': False,
+                'error': f'Prediction failed: {str(e)}'
+            }), 500
 
         # Add file info to response
         result['filename'] = filename
@@ -594,11 +649,18 @@ def upload_and_predict():
         # Clean up uploaded file (optional - you might want to keep for records)
         # os.remove(file_path)
 
-        return jsonify(response)
+        response_json = jsonify(response)
+        response_json.headers['Content-Type'] = 'application/json'
+        return response_json
 
     except Exception as e:
         logger.error(f"Error in TB prediction: {e}")
-        return jsonify({'error': f'Prediction failed: {str(e)}'}), 500
+        response_json = jsonify({
+            'success': False,
+            'error': f'Prediction failed: {str(e)}'
+        })
+        response_json.headers['Content-Type'] = 'application/json'
+        return response_json, 500
 
 
 @tb_bp.route('/model-info')
