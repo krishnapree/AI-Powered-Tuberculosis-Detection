@@ -59,3 +59,13 @@ Thumbs.db
 *.pth
 !backend/models/pytorch_tb_model.pth
 *.h5
+
+# Test files and documentation (except README.md)
+test_*.py
+*_test.py
+*.md
+!README.md
+
+# Build scripts and deployment configs (optional)
+build.sh
+render.yaml
