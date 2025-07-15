@@ -222,39 +222,77 @@ class AuthService:
 auth_service = AuthService()
 
 # API Routes
-@auth_bp.route('/register', methods=['POST'])
+@auth_bp.route('/register', methods=['POST', 'OPTIONS'])
 def register():
-    """User registration endpoint"""
-    data = request.get_json()
-    
-    if not data:
-        return jsonify({'success': False, 'error': 'No data provided'}), 400
-    
-    result = auth_service.register_user(
-        data.get('username'),
-        data.get('email'),
-        data.get('password'),
-        data.get('full_name')
-    )
-    
-    status_code = 200 if result['success'] else 400
-    return jsonify(result), status_code
+    """User registration endpoint with CORS support"""
+    # Handle preflight OPTIONS request
+    if request.method == 'OPTIONS':
+        response = jsonify({'status': 'ok'})
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+        response.headers.add('Access-Control-Allow-Methods', 'POST,OPTIONS')
+        return response
 
-@auth_bp.route('/login', methods=['POST'])
+    try:
+        data = request.get_json()
+
+        if not data:
+            response = jsonify({'success': False, 'error': 'No data provided'})
+            response.headers.add('Access-Control-Allow-Origin', '*')
+            return response, 400
+
+        result = auth_service.register_user(
+            data.get('username'),
+            data.get('email'),
+            data.get('password'),
+            data.get('full_name')
+        )
+
+        status_code = 200 if result['success'] else 400
+        response = jsonify(result)
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response, status_code
+
+    except Exception as e:
+        logger.error(f"Registration error: {e}")
+        response = jsonify({'success': False, 'error': 'Registration failed due to server error'})
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response, 500
+
+@auth_bp.route('/login', methods=['POST', 'OPTIONS'])
 def login():
-    """User login endpoint"""
-    data = request.get_json()
-    
-    if not data:
-        return jsonify({'success': False, 'error': 'No data provided'}), 400
-    
-    result = auth_service.login_user(
-        data.get('username'),
-        data.get('password')
-    )
-    
-    status_code = 200 if result['success'] else 401
-    return jsonify(result), status_code
+    """User login endpoint with CORS support"""
+    # Handle preflight OPTIONS request
+    if request.method == 'OPTIONS':
+        response = jsonify({'status': 'ok'})
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+        response.headers.add('Access-Control-Allow-Methods', 'POST,OPTIONS')
+        return response
+
+    try:
+        data = request.get_json()
+
+        if not data:
+            response = jsonify({'success': False, 'error': 'No data provided'})
+            response.headers.add('Access-Control-Allow-Origin', '*')
+            return response, 400
+
+        result = auth_service.login_user(
+            data.get('username'),
+            data.get('password')
+        )
+
+        status_code = 200 if result['success'] else 401
+        response = jsonify(result)
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response, status_code
+
+    except Exception as e:
+        logger.error(f"Login error: {e}")
+        response = jsonify({'success': False, 'error': 'Login failed due to server error'})
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response, 500
 
 @auth_bp.route('/verify', methods=['POST'])
 def verify():

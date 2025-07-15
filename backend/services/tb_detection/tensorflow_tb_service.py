@@ -12,11 +12,8 @@ Version: 3.0 (TensorFlow Lite Integration)
 
 import os
 import numpy as np
-import tensorflow as tf
-from tensorflow.keras.applications import ResNet50
-from tensorflow.keras.layers import Dense, Dropout, GlobalAveragePooling2D
-from tensorflow.keras.models import Model
-from tensorflow.keras.preprocessing import image
+# CRITICAL: Import TensorFlow only when needed to save memory
+# import tensorflow as tf  # Moved to load_model() method
 from PIL import Image
 import cv2
 import logging
@@ -86,6 +83,12 @@ class TBDetectionModel:
     def create_model_architecture(self):
         """Create the same ResNet50 architecture as PyTorch version"""
         try:
+            # Import TensorFlow components when needed
+            import tensorflow as tf
+            from tensorflow.keras.applications import ResNet50
+            from tensorflow.keras.layers import Dense, Dropout, GlobalAveragePooling2D
+            from tensorflow.keras.models import Model
+
             # Load ResNet50 base model (same as PyTorch version)
             base_model = ResNet50(
                 weights='imagenet',
@@ -123,6 +126,24 @@ class TBDetectionModel:
             return
 
         try:
+            # Import TensorFlow only when needed to save memory
+            import tensorflow as tf
+
+            # Configure TensorFlow for minimal memory usage
+            try:
+                # Disable GPU completely to save memory
+                tf.config.set_visible_devices([], 'GPU')
+
+                # Limit CPU memory usage
+                tf.config.threading.set_inter_op_parallelism_threads(1)
+                tf.config.threading.set_intra_op_parallelism_threads(1)
+
+                # Disable eager execution to save memory
+                tf.compat.v1.disable_eager_execution()
+
+            except Exception as e:
+                logger.warning(f"TensorFlow configuration warning: {e}")
+                pass
             # Check if TensorFlow Lite model exists
             if os.path.exists(self.model_path) and self.model_path.endswith('.tflite'):
                 try:
@@ -277,6 +298,9 @@ class TBDetectionModel:
 
             # Process predictions with memory optimization
             try:
+                # Import TensorFlow for processing predictions
+                import tensorflow as tf
+
                 probabilities = tf.nn.softmax(predictions[0]).numpy()
                 predicted_class = np.argmax(probabilities)
                 confidence = float(probabilities[predicted_class])
@@ -608,8 +632,8 @@ def upload_and_predict():
 
             logger.info(f"Prediction completed: {result.get('prediction', 'unknown')}")
 
-            # CRITICAL: Unload model immediately after prediction to free memory
-            detector.unload_model()
+            # Model will be unloaded by the detector.predict() method
+            # Don't unload here to prevent double unloading
 
             # Force aggressive garbage collection after prediction
             gc.collect()

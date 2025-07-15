@@ -31,38 +31,22 @@ from config import config
 TB_SERVICE_AVAILABLE = False
 TB_SERVICE_TYPE = "none"
 
+# CRITICAL MEMORY FIX: Don't import TensorFlow at startup - only when needed
+# This prevents 200MB+ memory usage at startup
 try:
-    # Import TensorFlow with aggressive memory optimization
-    import tensorflow as tf
+    # Set TensorFlow environment variables BEFORE any import
+    import os
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Suppress TensorFlow logs
+    os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = 'false'
+    os.environ['TF_GPU_ALLOCATOR'] = 'cuda_malloc_async'
 
-    # Configure TensorFlow for ULTRA minimal memory usage
-    try:
-        # Disable GPU completely to save memory
-        tf.config.set_visible_devices([], 'GPU')
-
-        # Limit CPU memory usage
-        tf.config.threading.set_inter_op_parallelism_threads(1)
-        tf.config.threading.set_intra_op_parallelism_threads(1)
-
-        # Disable eager execution to save memory
-        tf.compat.v1.disable_eager_execution()
-
-        # Set memory optimization flags
-        import os
-        os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Suppress TensorFlow logs
-        os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = 'false'
-        os.environ['TF_GPU_ALLOCATOR'] = 'cuda_malloc_async'
-
-    except Exception as e:
-        print(f"TensorFlow configuration warning: {e}")
-        pass
-
+    # Import TB service without loading TensorFlow yet
     from services.tb_detection.tensorflow_tb_service import tb_bp
     TB_SERVICE_AVAILABLE = True
     TB_SERVICE_TYPE = "tensorflow"
-    print("[SUCCESS] TB Detection service loaded with TensorFlow (Memory Optimized)")
+    print("[SUCCESS] TB Detection service registered (TensorFlow lazy-loaded)")
 except ImportError as e:
-    print(f"TensorFlow not available: {e}")
+    print(f"TensorFlow service not available: {e}")
     try:
         from services.tb_detection.mock_tb_service import tb_bp
         TB_SERVICE_AVAILABLE = True
@@ -72,12 +56,12 @@ except ImportError as e:
         print(f"[ERROR] TB Detection service not available: {e2}")
         TB_SERVICE_AVAILABLE = False
 except Exception as e:
-    print(f"Error loading TensorFlow service: {e}")
+    print(f"Error loading TB service: {e}")
     try:
         from services.tb_detection.mock_tb_service import tb_bp
         TB_SERVICE_AVAILABLE = True
         TB_SERVICE_TYPE = "mock"
-        print("[WARNING] Fallback to Mock service due to TensorFlow error")
+        print("[WARNING] Fallback to Mock service due to error")
     except Exception as e3:
         print(f"[ERROR] All TB services failed: {e3}")
         TB_SERVICE_AVAILABLE = False
