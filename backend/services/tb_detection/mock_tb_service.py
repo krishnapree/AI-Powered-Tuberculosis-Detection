@@ -202,13 +202,19 @@ def upload_and_predict():
         result['filename'] = filename
         result['upload_timestamp'] = datetime.now().isoformat()
         
-        # Encode image for display
+        # Skip image encoding to save memory
+        # result['image_data'] = None  # Removed to reduce memory usage
+
+        # Clean up uploaded file immediately to save disk space
         try:
-            with open(file_path, 'rb') as img_file:
-                img_data = base64.b64encode(img_file.read()).decode('utf-8')
-                result['image_data'] = f"data:image/jpeg;base64,{img_data}"
+            os.remove(file_path)
+            logger.info(f"Cleaned up uploaded file: {filename}")
         except Exception as e:
-            logger.warning(f"Could not encode image: {e}")
+            logger.warning(f"Could not clean up file {filename}: {e}")
+
+        # Force garbage collection
+        import gc
+        gc.collect()
         
         # Create comprehensive detailed response
         response = {
@@ -233,9 +239,9 @@ def upload_and_predict():
             }
         }
         
-        # Add image data if available
-        if 'image_data' in result:
-            response['image_data'] = result['image_data']
+        # Skip image data to save memory
+        # if 'image_data' in result:
+        #     response['image_data'] = result['image_data']
         
         logger.info(f"Mock TB prediction completed: {result['prediction']} ({result['confidence']:.2%})")
         

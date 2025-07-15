@@ -32,35 +32,27 @@ TB_SERVICE_AVAILABLE = False
 TB_SERVICE_TYPE = "none"
 
 try:
-    # Try to import TensorFlow first
+    # Import TensorFlow with memory optimization
     import tensorflow as tf
-    print(f"TensorFlow version: {tf.__version__}")
+    # Configure TensorFlow for memory efficiency
+    tf.config.experimental.enable_memory_growth = True
     from services.tb_detection.tensorflow_tb_service import tb_bp
     TB_SERVICE_AVAILABLE = True
     TB_SERVICE_TYPE = "tensorflow"
-    print("[SUCCESS] TB Detection service loaded with TensorFlow (Production)")
+    print("[SUCCESS] TB Detection service loaded with TensorFlow (Memory Optimized)")
 except ImportError as e:
     print(f"TensorFlow not available: {e}")
     try:
         from services.tb_detection.mock_tb_service import tb_bp
         TB_SERVICE_AVAILABLE = True
         TB_SERVICE_TYPE = "mock"
-        print("[WARNING] TB Detection service loaded with Mock (Local Testing Only)")
-        print("   Note: Mock service provides random predictions for testing UI/UX")
-        print("   Production deployment will use real TensorFlow model")
+        print("[WARNING] TB Detection service loaded with Mock")
     except ImportError as e2:
         print(f"[ERROR] TB Detection service not available: {e2}")
         TB_SERVICE_AVAILABLE = False
 except Exception as e:
     print(f"Error loading TensorFlow service: {e}")
-    try:
-        from services.tb_detection.mock_tb_service import tb_bp
-        TB_SERVICE_AVAILABLE = True
-        TB_SERVICE_TYPE = "mock"
-        print("[WARNING] Fallback to Mock service due to TensorFlow error")
-    except Exception as e3:
-        print(f"[ERROR] All TB services failed: {e3}")
-        TB_SERVICE_AVAILABLE = False
+    TB_SERVICE_AVAILABLE = False
 
 # Heart Rate Monitoring service removed
 HR_SERVICE_AVAILABLE = False
@@ -191,10 +183,12 @@ def create_app(config_name='default'):
         app.register_blueprint(auth_bp, url_prefix='/api/auth')
         logger.info("[SUCCESS] Authentication service registered")
 
-    # Frontend routes
+    # Frontend routes - ensure proper routing for Render deployment
     @app.route('/')
+    @app.route('/index.html')
+    @app.route('/home')
     def landing():
-        """Landing page with authentication"""
+        """Landing page with authentication - handles multiple routes"""
         return render_template('landing.html')
 
     @app.route('/dashboard')
@@ -221,6 +215,17 @@ def create_app(config_name='default'):
     def favicon():
         """Serve favicon - return empty response to prevent 404"""
         return '', 204
+
+    # Add health check route for deployment monitoring
+    @app.route('/health')
+    @app.route('/healthcheck')
+    def simple_health_check():
+        """Simple health check endpoint for deployment monitoring"""
+        return jsonify({
+            'status': 'healthy',
+            'service': 'TB Detection Platform',
+            'timestamp': datetime.now().isoformat()
+        })
 
     # Add static file serving for production
     @app.route('/static/<path:filename>')
@@ -291,23 +296,24 @@ def create_app(config_name='default'):
 
     return app
 
-# Create app for WSGI deployment (memory optimized)
-gc.collect()  # Force garbage collection
-app = create_app(os.environ.get('FLASK_ENV', 'production'))
-
+# Only create app once to prevent memory issues and URL redirect problems
 if __name__ == '__main__':
-    # Run the application directly (for local development)
+    # Local development mode
+    app = create_app(os.environ.get('FLASK_ENV', 'development'))
     logger.info("Healthcare Portal Backend API Server starting...")
     logger.info("API endpoints available at http://localhost:5000/api/")
     logger.info("Health check: http://localhost:5000/api/health")
 
-    # Get port from environment (for Render deployment)
     port = int(os.environ.get('PORT', 5001))
-    host = os.environ.get('HOST', '0.0.0.0')  # Changed to 0.0.0.0 for deployment
+    host = os.environ.get('HOST', '0.0.0.0')
 
     app.run(
         host=host,
         port=port,
         debug=app.config.get('DEBUG', False),
-        threaded=True  # Enable threading for better performance
+        threaded=True
     )
+else:
+    # WSGI deployment mode (Render, Gunicorn, etc.)
+    gc.collect()  # Force garbage collection before creating app
+    app = create_app(os.environ.get('FLASK_ENV', 'production'))
