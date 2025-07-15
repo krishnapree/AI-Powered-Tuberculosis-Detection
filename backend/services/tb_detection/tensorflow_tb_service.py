@@ -213,10 +213,18 @@ class TBDetectionModel:
         logger.info("🗑️ TB model unloaded to free memory")
     
     def preprocess_image(self, image_path):
-        """Preprocess image for TensorFlow model with memory optimization"""
+        """Preprocess image for TensorFlow model with aggressive memory optimization"""
+        img_array = None
         try:
-            # Load and process image with memory efficiency
+            # Force garbage collection before processing
+            gc.collect()
+
+            # Load and process image with strict memory management
             with Image.open(image_path) as img:
+                # Limit image size to prevent memory issues
+                if img.size[0] > 1024 or img.size[1] > 1024:
+                    img.thumbnail((1024, 1024), Image.Resampling.LANCZOS)
+
                 img = img.convert('RGB')
                 # Resize to 224x224 (same as PyTorch)
                 img = img.resize((224, 224), Image.Resampling.LANCZOS)
@@ -224,7 +232,13 @@ class TBDetectionModel:
                 # Convert to numpy array with memory optimization
                 img_array = np.array(img, dtype=np.float32)
 
-            # Normalize efficiently
+                # Clear PIL image from memory immediately
+                del img
+
+            # Force garbage collection after image loading
+            gc.collect()
+
+            # Normalize efficiently in-place to save memory
             img_array /= 255.0
             img_array[:, :, 0] = (img_array[:, :, 0] - 0.485) / 0.229
             img_array[:, :, 1] = (img_array[:, :, 1] - 0.456) / 0.224
@@ -236,6 +250,10 @@ class TBDetectionModel:
             return img_array
 
         except Exception as e:
+            # Clean up on error
+            if img_array is not None:
+                del img_array
+            gc.collect()
             logger.error(f"Error preprocessing image: {e}")
             raise e
     
@@ -507,10 +525,44 @@ def cleanup_tb_detector():
             tb_detector.unload_model()
             del tb_detector
             tb_detector = None
+
+            # Force aggressive garbage collection
             gc.collect()
-            logger.info("🗑️ TB detector cleaned up globally")
+            gc.collect()  # Call twice for better cleanup
+
+            # Clear TensorFlow session if it exists
+            try:
+                import tensorflow as tf
+                tf.keras.backend.clear_session()
+            except:
+                pass
+
+            logger.info("🗑️ TB detector cleaned up globally with aggressive memory cleanup")
         except Exception as e:
             logger.warning(f"Error during TB detector cleanup: {e}")
+
+def force_memory_cleanup():
+    """Force aggressive memory cleanup"""
+    try:
+        # Clean up global detector
+        cleanup_tb_detector()
+
+        # Force multiple garbage collection cycles
+        for _ in range(3):
+            gc.collect()
+
+        # Clear any remaining TensorFlow resources
+        try:
+            import tensorflow as tf
+            tf.keras.backend.clear_session()
+            # Clear any cached models
+            tf.keras.utils.clear_session()
+        except:
+            pass
+
+        logger.info("🧹 Aggressive memory cleanup completed")
+    except Exception as e:
+        logger.warning(f"Error during aggressive memory cleanup: {e}")
 
 # Constants
 UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static/uploads')
@@ -702,12 +754,15 @@ def upload_and_predict():
         except Exception as e:
             logger.warning(f"Could not clean up file {filename}: {e}")
 
-        # CRITICAL: Global cleanup after each request
-        cleanup_tb_detector()
+        # CRITICAL: Aggressive memory cleanup after each request
+        force_memory_cleanup()
 
-        # Force aggressive garbage collection after processing
-        import gc
-        gc.collect()
+        # Clean up uploaded file immediately to save disk space
+        try:
+            os.remove(file_path)
+            logger.info(f"Cleaned up uploaded file: {filename}")
+        except Exception as e:
+            logger.warning(f"Could not clean up file {filename}: {e}")
 
         response_json = jsonify(response)
         response_json.headers['Content-Type'] = 'application/json'
@@ -716,9 +771,16 @@ def upload_and_predict():
     except Exception as e:
         logger.error(f"Error in TB prediction: {e}")
 
-        # CRITICAL: Cleanup even on error
-        cleanup_tb_detector()
-        gc.collect()
+        # CRITICAL: Aggressive cleanup even on error
+        force_memory_cleanup()
+
+        # Clean up uploaded file on error
+        try:
+            if 'file_path' in locals():
+                os.remove(file_path)
+                logger.info(f"Cleaned up uploaded file after error")
+        except Exception as cleanup_error:
+            logger.warning(f"Could not clean up file after error: {cleanup_error}")
 
         response_json = jsonify({
             'success': False,

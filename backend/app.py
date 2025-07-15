@@ -235,11 +235,23 @@ def create_app(config_name='default'):
         """AI Assistant page"""
         return render_template('ai_assistant.html')
 
-    # Add favicon route to prevent 404 errors
+    # Add favicon route with healthcare-themed icon
     @app.route('/favicon.ico')
     def favicon():
-        """Serve favicon - return empty response to prevent 404"""
-        return '', 204
+        """Serve healthcare-themed favicon"""
+        # Create a simple healthcare-themed favicon using SVG
+        favicon_svg = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+            <circle cx="16" cy="16" r="15" fill="#2563eb" stroke="#1e40af" stroke-width="2"/>
+            <path d="M12 8h8v4h4v8h-4v4h-8v-4H8v-8h4V8z" fill="white"/>
+            <circle cx="16" cy="16" r="3" fill="#2563eb"/>
+        </svg>'''
+
+        response = app.response_class(
+            favicon_svg,
+            mimetype='image/svg+xml'
+        )
+        response.headers['Cache-Control'] = 'public, max-age=86400'  # Cache for 1 day
+        return response
 
     # Add health check route for deployment monitoring
     @app.route('/health')
@@ -299,17 +311,43 @@ def create_app(config_name='default'):
 
     @app.route('/api/memory-status', methods=['GET'])
     def memory_status():
-        """Memory monitoring endpoint for debugging"""
+        """Memory monitoring endpoint with automatic cleanup"""
         import psutil
         import sys
 
         process = psutil.Process()
         memory_info = process.memory_info()
+        memory_mb = round(memory_info.rss / 1024 / 1024, 2)
+
+        # Automatic memory cleanup if usage is high
+        if memory_mb > 300:  # If memory usage > 300MB
+            logger.warning(f"High memory usage detected: {memory_mb}MB - triggering cleanup")
+            try:
+                # Force aggressive garbage collection
+                for _ in range(3):
+                    gc.collect()
+
+                # Try to clean up TB detector if available
+                try:
+                    from services.tb_detection.tensorflow_tb_service import force_memory_cleanup
+                    force_memory_cleanup()
+                except:
+                    pass
+
+                # Get updated memory info
+                memory_info = process.memory_info()
+                memory_mb = round(memory_info.rss / 1024 / 1024, 2)
+                logger.info(f"Memory after cleanup: {memory_mb}MB")
+            except Exception as e:
+                logger.error(f"Error during automatic memory cleanup: {e}")
 
         return jsonify({
-            'memory_usage_mb': round(memory_info.rss / 1024 / 1024, 2),
+            'memory_usage_mb': memory_mb,
             'memory_percent': round(process.memory_percent(), 2),
-            'python_version': sys.version,
+            'memory_status': 'critical' if memory_mb > 400 else 'warning' if memory_mb > 250 else 'normal',
+            'render_limit_mb': 512,
+            'available_mb': round(512 - memory_mb, 2),
+            'python_version': sys.version.split()[0],
             'gc_count': len(gc.get_objects())
         })
 
