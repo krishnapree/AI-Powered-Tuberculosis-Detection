@@ -35,23 +35,27 @@ try:
     # Import TensorFlow with aggressive memory optimization
     import tensorflow as tf
 
-    # Configure TensorFlow for minimal memory usage
+    # Configure TensorFlow for ULTRA minimal memory usage
     try:
-        # Limit GPU memory if available
-        gpus = tf.config.experimental.list_physical_devices('GPU')
-        if gpus:
-            for gpu in gpus:
-                tf.config.experimental.set_memory_growth(gpu, True)
-                # Limit GPU memory to 256MB max
-                tf.config.experimental.set_virtual_device_configuration(
-                    gpu, [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=256)]
-                )
-    except:
-        pass
+        # Disable GPU completely to save memory
+        tf.config.set_visible_devices([], 'GPU')
 
-    # Optimize for CPU usage
-    tf.config.threading.set_inter_op_parallelism_threads(1)
-    tf.config.threading.set_intra_op_parallelism_threads(1)
+        # Limit CPU memory usage
+        tf.config.threading.set_inter_op_parallelism_threads(1)
+        tf.config.threading.set_intra_op_parallelism_threads(1)
+
+        # Disable eager execution to save memory
+        tf.compat.v1.disable_eager_execution()
+
+        # Set memory optimization flags
+        import os
+        os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Suppress TensorFlow logs
+        os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = 'false'
+        os.environ['TF_GPU_ALLOCATOR'] = 'cuda_malloc_async'
+
+    except Exception as e:
+        print(f"TensorFlow configuration warning: {e}")
+        pass
 
     from services.tb_detection.tensorflow_tb_service import tb_bp
     TB_SERVICE_AVAILABLE = True

@@ -81,28 +81,7 @@ class TBDetectionModel:
         self.model_loaded = False
         self.input_shape = (224, 224, 3)
 
-        # TensorFlow optimization settings for memory efficiency
-        import tensorflow as tf
-
-        # Configure TensorFlow for minimal memory usage
-        try:
-            # Limit memory growth for GPU if available
-            gpus = tf.config.experimental.list_physical_devices('GPU')
-            if gpus:
-                for gpu in gpus:
-                    tf.config.experimental.set_memory_growth(gpu, True)
-                    tf.config.experimental.set_virtual_device_configuration(
-                        gpu, [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=256)]
-                    )
-        except:
-            pass  # Continue with CPU
-
-        # Optimize CPU threading for memory efficiency
-        tf.config.threading.set_inter_op_parallelism_threads(1)
-        tf.config.threading.set_intra_op_parallelism_threads(1)
-
-        # Disable eager execution to save memory
-        tf.compat.v1.disable_eager_execution()
+        # TensorFlow is already configured in app.py - no need to reconfigure here
     
     def create_model_architecture(self):
         """Create the same ResNet50 architecture as PyTorch version"""
@@ -296,6 +275,11 @@ class TBDetectionModel:
                 logger.error(f"Error processing predictions: {e}")
                 raise e
 
+            # CRITICAL: Unload model after each prediction to free memory
+            finally:
+                self.unload_model()
+                gc.collect()
+
             # Risk assessment and detailed analysis
             if prediction == 'Tuberculosis':
                 if confidence >= 0.9:
@@ -441,29 +425,10 @@ def get_tb_detector():
         return tb_detector
     
     try:
-        # Try multiple possible model paths (prioritize production model)
+        # Use ONLY the memory-optimized model to minimize memory overhead
         possible_paths = [
-            # Production model (81.86% accuracy) - highest priority
+            # Production model (81.86% accuracy) - ONLY option for memory efficiency
             os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../models/tensorflow_tb_memory_95_accuracy.tflite'),
-            'models/tensorflow_tb_memory_95_accuracy.tflite',
-            'backend/models/tensorflow_tb_memory_95_accuracy.tflite',
-
-            # Fallback models
-            os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../models/tensorflow_tb_model_99_accuracy.tflite'),
-            'models/tensorflow_tb_model_99_accuracy.tflite',
-            'backend/models/tensorflow_tb_model_99_accuracy.tflite',
-
-            os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../models/tensorflow_tb_model_gpu.tflite'),
-            'models/tensorflow_tb_model_gpu.tflite',
-            'backend/models/tensorflow_tb_model_gpu.tflite',
-
-            # Original models (lowest priority)
-            os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../models/tensorflow_tb_model.tflite'),
-            os.path.join(os.path.dirname(os.path.abspath(__file__)), 'models/tensorflow_tb_model.tflite'),
-            os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../models/tensorflow_tb_model.h5'),
-            os.path.join(os.path.dirname(os.path.abspath(__file__)), 'models/tensorflow_tb_model.h5'),
-            'models/tensorflow_tb_model.tflite',
-            'backend/models/tensorflow_tb_model.tflite'
         ]
         
         for path in possible_paths:
@@ -472,19 +437,31 @@ def get_tb_detector():
                 break
 
         if tb_model_path:
-            # Create detector instance but don't load model yet (lazy loading)
+            # Create detector instance but don't load model yet (ultra-lazy loading)
             tb_detector = TBDetectionModel(tb_model_path)
-            logger.info(f"✅ TB detector initialized (lazy loading) with model path: {tb_model_path}")
+            logger.info(f"✅ TB detector initialized (ultra-lazy loading) with model path: {tb_model_path}")
             return tb_detector
         else:
-            # Create detector with default path (will use ImageNet weights as fallback)
-            tb_detector = TBDetectionModel()
-            logger.warning(f"⚠️ TB model not found, using fallback model")
-            return tb_detector
+            # No fallback model to prevent memory issues
+            logger.error("⚠️ TB model not found, no fallback available to prevent memory issues")
+            return None
 
     except Exception as e:
         logger.error(f"❌ Failed to initialize TB detector: {e}")
         return None
+
+def cleanup_tb_detector():
+    """Force cleanup of TB detector to free memory"""
+    global tb_detector
+    if tb_detector is not None:
+        try:
+            tb_detector.unload_model()
+            del tb_detector
+            tb_detector = None
+            gc.collect()
+            logger.info("🗑️ TB detector cleaned up globally")
+        except Exception as e:
+            logger.warning(f"Error during TB detector cleanup: {e}")
 
 # Constants
 UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static/uploads')
@@ -608,7 +585,10 @@ def upload_and_predict():
             result = detector.predict(file_path)
             logger.info(f"Prediction completed: {result.get('prediction', 'unknown')}")
 
-            # Force garbage collection after prediction
+            # CRITICAL: Unload model immediately after prediction to free memory
+            detector.unload_model()
+
+            # Force aggressive garbage collection after prediction
             gc.collect()
 
         except MemoryError as e:
@@ -675,7 +655,10 @@ def upload_and_predict():
         except Exception as e:
             logger.warning(f"Could not clean up file {filename}: {e}")
 
-        # Force garbage collection after processing
+        # CRITICAL: Global cleanup after each request
+        cleanup_tb_detector()
+
+        # Force aggressive garbage collection after processing
         import gc
         gc.collect()
 
@@ -685,6 +668,11 @@ def upload_and_predict():
 
     except Exception as e:
         logger.error(f"Error in TB prediction: {e}")
+
+        # CRITICAL: Cleanup even on error
+        cleanup_tb_detector()
+        gc.collect()
+
         response_json = jsonify({
             'success': False,
             'error': f'Prediction failed: {str(e)}'
