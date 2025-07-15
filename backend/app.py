@@ -195,10 +195,23 @@ def create_app(config_name='default'):
     def dashboard():
         """Main TB detection platform dashboard"""
         # Handle both local development and deployment paths
-        public_folder = '../frontend/public'
-        if not os.path.exists(public_folder):
-            public_folder = 'frontend/public'
-        return send_from_directory(public_folder, 'index.html')
+        possible_public_paths = [
+            '../frontend/public',  # Local development from backend/
+            'frontend/public',     # Deployment from root
+            './frontend/public',   # Alternative deployment path
+        ]
+
+        public_folder = None
+        for path in possible_public_paths:
+            if os.path.exists(path):
+                public_folder = os.path.abspath(path)
+                break
+
+        if public_folder and os.path.exists(os.path.join(public_folder, 'index.html')):
+            return send_from_directory(public_folder, 'index.html')
+        else:
+            # Fallback: render a simple dashboard template if public folder not found
+            return render_template('tb_detection.html')
 
     @app.route('/tb-detection')
     def tb_detection():
@@ -232,10 +245,23 @@ def create_app(config_name='default'):
     def static_files(filename):
         """Serve static files"""
         # Handle both local development and deployment paths
-        static_folder_path = '../frontend/static'
-        if not os.path.exists(static_folder_path):
-            static_folder_path = 'frontend/static'
-        return send_from_directory(static_folder_path, filename)
+        possible_static_paths = [
+            '../frontend/static',  # Local development
+            'frontend/static',     # Deployment
+            './frontend/static',   # Alternative
+            '../frontend/public',  # Public assets
+            'frontend/public',     # Public assets deployment
+        ]
+
+        for static_path in possible_static_paths:
+            if os.path.exists(static_path):
+                try:
+                    return send_from_directory(static_path, filename)
+                except:
+                    continue
+
+        # If file not found in any static directory, return 404
+        return '', 404
 
     # Register API routes
     @app.route('/api/health', methods=['GET'])

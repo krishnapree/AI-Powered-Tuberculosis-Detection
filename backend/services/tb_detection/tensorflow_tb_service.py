@@ -46,9 +46,14 @@ class TBDetectionModel:
         self.output_details = None
 
         # Use only one model to minimize memory usage - prioritize smallest model
+        # Get the directory where this service file is located
+        service_dir = os.path.dirname(__file__)
+        models_dir = os.path.join(service_dir, '../../models')
+        models_dir = os.path.abspath(models_dir)
+
         model_candidates = [
-            ('models/tensorflow_tb_memory_95_accuracy.tflite', 81.86, "TensorFlow Lite (Memory Optimized)"),
-            ('models/tensorflow_tb_model.tflite', 99.84, "TensorFlow Lite (Standard)"),
+            (os.path.join(models_dir, 'tensorflow_tb_memory_95_accuracy.tflite'), 81.86, "TensorFlow Lite (Memory Optimized)"),
+            (os.path.join(models_dir, 'tensorflow_tb_model.tflite'), 99.84, "TensorFlow Lite (Standard)"),
         ]
 
         # Find the first available model (prioritizing memory-optimized version)
@@ -57,9 +62,12 @@ class TBDetectionModel:
                 self.model_path = model_path
                 self.accuracy = accuracy
                 self.model_type = model_type
+                print(f"Found TB model: {model_path}")
                 break
         else:
             # No model found - raise error instead of continuing with fallbacks
+            print(f"Models directory: {models_dir}")
+            print(f"Directory contents: {os.listdir(models_dir) if os.path.exists(models_dir) else 'Directory not found'}")
             raise FileNotFoundError("No TB detection model found")
 
         # Set default model metrics (simplified to save memory)
