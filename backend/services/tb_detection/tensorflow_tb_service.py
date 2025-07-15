@@ -83,8 +83,26 @@ class TBDetectionModel:
 
         # TensorFlow optimization settings for memory efficiency
         import tensorflow as tf
+
+        # Configure TensorFlow for minimal memory usage
+        try:
+            # Limit memory growth for GPU if available
+            gpus = tf.config.experimental.list_physical_devices('GPU')
+            if gpus:
+                for gpu in gpus:
+                    tf.config.experimental.set_memory_growth(gpu, True)
+                    tf.config.experimental.set_virtual_device_configuration(
+                        gpu, [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=256)]
+                    )
+        except:
+            pass  # Continue with CPU
+
+        # Optimize CPU threading for memory efficiency
         tf.config.threading.set_inter_op_parallelism_threads(1)
         tf.config.threading.set_intra_op_parallelism_threads(1)
+
+        # Disable eager execution to save memory
+        tf.compat.v1.disable_eager_execution()
     
     def create_model_architecture(self):
         """Create the same ResNet50 architecture as PyTorch version"""
@@ -162,12 +180,9 @@ class TBDetectionModel:
                             continue
                 
                 if not model_loaded:
-                    # Create model with pre-trained weights as fallback
-                    logger.warning("No trained model found, creating model with ImageNet weights")
-                    self.model = self.create_model_architecture()
-                    self.model_loaded = True
-                    logger.info("✅ Model created with ImageNet weights")
-                    logger.warning("⚠️ Using ImageNet weights - for production, upload trained TB model")
+                    # Don't create ResNet50 model as fallback - it uses too much memory
+                    logger.error("No trained model found and cannot create fallback model due to memory constraints")
+                    raise FileNotFoundError("TB detection model not available - no trained model found")
 
             # Force garbage collection to free memory
             gc.collect()
@@ -227,35 +242,59 @@ class TBDetectionModel:
             dict: Prediction results with confidence scores
         """
         try:
+            # Force garbage collection before processing
+            import gc
+            gc.collect()
+
             # Load model only when needed (lazy loading)
             if not self.model_loaded:
                 self.load_model()
 
-            # Preprocess image
+            # Preprocess image with memory optimization
             img_array = self.preprocess_image(image_path)
 
-            # Make prediction
+            # Force garbage collection after preprocessing
+            gc.collect()
+
+            # Make prediction with memory optimization
             if self.interpreter is not None:
-                # TensorFlow Lite inference
-                self.interpreter.set_tensor(self.input_details[0]['index'], img_array)
-                self.interpreter.invoke()
-                predictions = self.interpreter.get_tensor(self.output_details[0]['index'])
+                # TensorFlow Lite inference (memory efficient)
+                try:
+                    self.interpreter.set_tensor(self.input_details[0]['index'], img_array)
+                    self.interpreter.invoke()
+                    predictions = self.interpreter.get_tensor(self.output_details[0]['index'])
+                except Exception as e:
+                    logger.error(f"TensorFlow Lite inference failed: {e}")
+                    raise e
             else:
-                # Regular TensorFlow inference
-                predictions = self.model.predict(img_array, verbose=0)
+                # Regular TensorFlow inference (fallback)
+                try:
+                    predictions = self.model.predict(img_array, verbose=0, batch_size=1)
+                except Exception as e:
+                    logger.error(f"TensorFlow inference failed: {e}")
+                    raise e
 
-            # Process predictions (same logic as PyTorch)
-            probabilities = tf.nn.softmax(predictions[0]).numpy()
-            predicted_class = np.argmax(probabilities)
-            confidence = float(probabilities[predicted_class])
+            # Process predictions with memory optimization
+            try:
+                probabilities = tf.nn.softmax(predictions[0]).numpy()
+                predicted_class = np.argmax(probabilities)
+                confidence = float(probabilities[predicted_class])
 
-            # Class mapping (same as PyTorch)
-            class_names = ['Normal', 'Tuberculosis']
-            prediction = class_names[predicted_class]
+                # Class mapping (same as PyTorch)
+                class_names = ['Normal', 'Tuberculosis']
+                prediction = class_names[predicted_class]
 
-            # Detailed analysis
-            normal_confidence = float(probabilities[0])
-            tb_confidence = float(probabilities[1])
+                # Detailed analysis
+                normal_confidence = float(probabilities[0])
+                tb_confidence = float(probabilities[1])
+
+                # Clear prediction arrays to free memory
+                del predictions, probabilities, img_array
+                gc.collect()
+
+            except Exception as e:
+                logger.error(f"Error processing predictions: {e}")
+                raise e
 
             # Risk assessment and detailed analysis
             if prediction == 'Tuberculosis':
@@ -559,10 +598,31 @@ def upload_and_predict():
                 'error': f'Error validating image: {str(e)}'
             }), 500
 
-        # Make prediction
+        # Make prediction with comprehensive error handling
         try:
+            # Force garbage collection before prediction
+            import gc
+            gc.collect()
+
+            logger.info("Starting TB detection prediction...")
             result = detector.predict(file_path)
             logger.info(f"Prediction completed: {result.get('prediction', 'unknown')}")
+
+            # Force garbage collection after prediction
+            gc.collect()
+
+        except MemoryError as e:
+            logger.error(f"Memory error during prediction: {e}")
+            # Clean up file
+            try:
+                os.remove(file_path)
+            except:
+                pass
+            return jsonify({
+                'success': False,
+                'error': 'Insufficient memory for analysis. Please try again or contact support.'
+            }), 507  # Insufficient Storage
+
         except Exception as e:
             logger.error(f"Error making prediction: {e}")
             # Clean up file
@@ -572,7 +632,7 @@ def upload_and_predict():
                 pass
             return jsonify({
                 'success': False,
-                'error': f'Prediction failed: {str(e)}'
+                'error': f'Analysis failed: {str(e)}'
             }), 500
 
         # Add file info to response

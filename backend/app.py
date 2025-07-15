@@ -32,10 +32,27 @@ TB_SERVICE_AVAILABLE = False
 TB_SERVICE_TYPE = "none"
 
 try:
-    # Import TensorFlow with memory optimization
+    # Import TensorFlow with aggressive memory optimization
     import tensorflow as tf
-    # Configure TensorFlow for memory efficiency
-    tf.config.experimental.enable_memory_growth = True
+
+    # Configure TensorFlow for minimal memory usage
+    try:
+        # Limit GPU memory if available
+        gpus = tf.config.experimental.list_physical_devices('GPU')
+        if gpus:
+            for gpu in gpus:
+                tf.config.experimental.set_memory_growth(gpu, True)
+                # Limit GPU memory to 256MB max
+                tf.config.experimental.set_virtual_device_configuration(
+                    gpu, [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=256)]
+                )
+    except:
+        pass
+
+    # Optimize for CPU usage
+    tf.config.threading.set_inter_op_parallelism_threads(1)
+    tf.config.threading.set_intra_op_parallelism_threads(1)
+
     from services.tb_detection.tensorflow_tb_service import tb_bp
     TB_SERVICE_AVAILABLE = True
     TB_SERVICE_TYPE = "tensorflow"
@@ -52,7 +69,14 @@ except ImportError as e:
         TB_SERVICE_AVAILABLE = False
 except Exception as e:
     print(f"Error loading TensorFlow service: {e}")
-    TB_SERVICE_AVAILABLE = False
+    try:
+        from services.tb_detection.mock_tb_service import tb_bp
+        TB_SERVICE_AVAILABLE = True
+        TB_SERVICE_TYPE = "mock"
+        print("[WARNING] Fallback to Mock service due to TensorFlow error")
+    except Exception as e3:
+        print(f"[ERROR] All TB services failed: {e3}")
+        TB_SERVICE_AVAILABLE = False
 
 # Heart Rate Monitoring service removed
 HR_SERVICE_AVAILABLE = False
