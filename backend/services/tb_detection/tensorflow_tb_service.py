@@ -125,17 +125,25 @@ class TBDetectionModel:
         try:
             # Check if TensorFlow Lite model exists
             if os.path.exists(self.model_path) and self.model_path.endswith('.tflite'):
-                # Load TensorFlow Lite model
-                self.interpreter = tf.lite.Interpreter(model_path=self.model_path)
-                self.interpreter.allocate_tensors()
-                
-                # Get input and output details
-                self.input_details = self.interpreter.get_input_details()
-                self.output_details = self.interpreter.get_output_details()
-                
-                self.model_loaded = True
-                logger.info(f"✅ TensorFlow Lite model loaded successfully from {self.model_path}")
-                logger.info(f"🎯 Model accuracy: {self.accuracy}%")
+                try:
+                    # Load TensorFlow Lite model with error handling
+                    self.interpreter = tf.lite.Interpreter(
+                        model_path=self.model_path,
+                        num_threads=1  # Single thread for memory efficiency
+                    )
+                    self.interpreter.allocate_tensors()
+
+                    # Get input and output details
+                    self.input_details = self.interpreter.get_input_details()
+                    self.output_details = self.interpreter.get_output_details()
+
+                    self.model_loaded = True
+                    logger.info(f"✅ TensorFlow Lite model loaded successfully from {self.model_path}")
+                    logger.info(f"🎯 Model accuracy: {self.accuracy}%")
+
+                except Exception as e:
+                    logger.error(f"Failed to load TensorFlow Lite model: {e}")
+                    raise e
                 
             else:
                 # If .tflite doesn't exist, try to load .h5 or .pb model
@@ -235,13 +243,25 @@ class TBDetectionModel:
             # Force garbage collection after preprocessing
             gc.collect()
 
-            # Make prediction with memory optimization
+            # Make prediction with memory optimization and robust error handling
             if self.interpreter is not None:
                 # TensorFlow Lite inference (memory efficient)
                 try:
+                    # Validate input tensor shape
+                    expected_shape = self.input_details[0]['shape']
+                    if img_array.shape != tuple(expected_shape):
+                        logger.error(f"Input shape mismatch: expected {expected_shape}, got {img_array.shape}")
+                        raise ValueError(f"Input shape mismatch: expected {expected_shape}, got {img_array.shape}")
+
+                    # Set input tensor and run inference
                     self.interpreter.set_tensor(self.input_details[0]['index'], img_array)
                     self.interpreter.invoke()
                     predictions = self.interpreter.get_tensor(self.output_details[0]['index'])
+
+                    # Validate output
+                    if predictions is None or len(predictions) == 0:
+                        raise ValueError("Model returned empty predictions")
+
                 except Exception as e:
                     logger.error(f"TensorFlow Lite inference failed: {e}")
                     raise e
@@ -249,6 +269,8 @@ class TBDetectionModel:
                 # Regular TensorFlow inference (fallback)
                 try:
                     predictions = self.model.predict(img_array, verbose=0, batch_size=1)
+                    if predictions is None or len(predictions) == 0:
+                        raise ValueError("Model returned empty predictions")
                 except Exception as e:
                     logger.error(f"TensorFlow inference failed: {e}")
                     raise e
@@ -273,12 +295,10 @@ class TBDetectionModel:
 
             except Exception as e:
                 logger.error(f"Error processing predictions: {e}")
-                raise e
-
-            # CRITICAL: Unload model after each prediction to free memory
-            finally:
+                # Unload model on error to free memory
                 self.unload_model()
                 gc.collect()
+                raise e
 
             # Risk assessment and detailed analysis
             if prediction == 'Tuberculosis':
@@ -373,10 +393,8 @@ class TBDetectionModel:
                 "artifacts": "No significant artifacts affecting analysis"
             }
 
-            # Unload model to free memory after prediction
-            self.unload_model()
-
-            return {
+            # Build result dictionary
+            result = {
                 'prediction': prediction,
                 'confidence': confidence,
                 'normal_confidence': normal_confidence,
@@ -405,8 +423,15 @@ class TBDetectionModel:
                 'analysis_timestamp': datetime.now().isoformat()
             }
 
+            # CRITICAL: Unload model after successful prediction to free memory
+            self.unload_model()
+            gc.collect()
+
+            return result
+
         except Exception as e:
             logger.error(f"Error in TB prediction: {e}")
+            # Model already unloaded in the inner exception handler
             return {
                 'prediction': 'Error',
                 'confidence': 0.0,
@@ -575,21 +600,45 @@ def upload_and_predict():
                 'error': f'Error validating image: {str(e)}'
             }), 500
 
-        # Make prediction with comprehensive error handling
+        # Make prediction with comprehensive error handling and timeout
         try:
             # Force garbage collection before prediction
             import gc
+            import signal
             gc.collect()
 
-            logger.info("Starting TB detection prediction...")
-            result = detector.predict(file_path)
-            logger.info(f"Prediction completed: {result.get('prediction', 'unknown')}")
+            def timeout_handler(signum, frame):
+                raise TimeoutError("TB detection analysis timed out")
+
+            # Set timeout for prediction (60 seconds max)
+            signal.signal(signal.SIGALRM, timeout_handler)
+            signal.alarm(60)
+
+            try:
+                logger.info("Starting TB detection prediction...")
+                result = detector.predict(file_path)
+                logger.info(f"Prediction completed: {result.get('prediction', 'unknown')}")
+            finally:
+                # Cancel timeout
+                signal.alarm(0)
 
             # CRITICAL: Unload model immediately after prediction to free memory
             detector.unload_model()
 
             # Force aggressive garbage collection after prediction
             gc.collect()
+
+        except TimeoutError as e:
+            logger.error(f"Timeout error during prediction: {e}")
+            # Clean up file
+            try:
+                os.remove(file_path)
+            except:
+                pass
+            return jsonify({
+                'success': False,
+                'error': 'Analysis timed out. Please try again with a different image.'
+            }), 408  # Request Timeout
 
         except MemoryError as e:
             logger.error(f"Memory error during prediction: {e}")
