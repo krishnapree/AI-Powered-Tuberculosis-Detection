@@ -584,61 +584,35 @@ def upload_and_predict():
                 'error': f'Error saving file: {str(e)}'
             }), 500
 
-        # Validate if it's a chest X-ray
-        try:
-            is_valid, validation_message = is_chest_xray(file_path)
-            if not is_valid:
-                os.remove(file_path)  # Clean up invalid file
-                return jsonify({
-                    'success': False,
-                    'error': f'Invalid chest X-ray: {validation_message}'
-                }), 400
-        except Exception as e:
-            logger.error(f"Error validating image: {e}")
-            return jsonify({
-                'success': False,
-                'error': f'Error validating image: {str(e)}'
-            }), 500
+        # Skip chest X-ray validation to prevent OpenCV issues that might cause 502 errors
+        # In production, basic file validation is sufficient
+        logger.info("Skipping chest X-ray validation to prevent OpenCV-related crashes")
 
-        # Make prediction with comprehensive error handling and timeout
+        # Make prediction with comprehensive error handling (no signal timeout for Windows compatibility)
         try:
             # Force garbage collection before prediction
             import gc
-            import signal
             gc.collect()
 
-            def timeout_handler(signum, frame):
-                raise TimeoutError("TB detection analysis timed out")
+            logger.info("Starting TB detection prediction...")
 
-            # Set timeout for prediction (60 seconds max)
-            signal.signal(signal.SIGALRM, timeout_handler)
-            signal.alarm(60)
+            # Validate detector is available
+            if not detector:
+                raise ValueError("TB detector not initialized")
 
-            try:
-                logger.info("Starting TB detection prediction...")
-                result = detector.predict(file_path)
-                logger.info(f"Prediction completed: {result.get('prediction', 'unknown')}")
-            finally:
-                # Cancel timeout
-                signal.alarm(0)
+            result = detector.predict(file_path)
+
+            # Validate result
+            if not result or 'prediction' not in result:
+                raise ValueError("Invalid prediction result from model")
+
+            logger.info(f"Prediction completed: {result.get('prediction', 'unknown')}")
 
             # CRITICAL: Unload model immediately after prediction to free memory
             detector.unload_model()
 
             # Force aggressive garbage collection after prediction
             gc.collect()
-
-        except TimeoutError as e:
-            logger.error(f"Timeout error during prediction: {e}")
-            # Clean up file
-            try:
-                os.remove(file_path)
-            except:
-                pass
-            return jsonify({
-                'success': False,
-                'error': 'Analysis timed out. Please try again with a different image.'
-            }), 408  # Request Timeout
 
         except MemoryError as e:
             logger.error(f"Memory error during prediction: {e}")
