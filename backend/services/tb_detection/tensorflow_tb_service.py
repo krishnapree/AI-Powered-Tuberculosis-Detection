@@ -676,36 +676,30 @@ def upload_and_predict():
             if not detector:
                 raise ValueError("TB detector not initialized")
 
-            # Add timeout protection for prediction
-            import threading
-            import time
+            # Simplified robust prediction without threading (threading can cause issues on some platforms)
+            try:
+                # Ensure model is loaded before prediction
+                if not detector.model_loaded:
+                    logger.info("Loading model for prediction...")
+                    detector.load_model()
+                    logger.info("Model loaded successfully")
 
-            result = None
-            prediction_error = None
+                # Make prediction with error handling
+                result = detector.predict(file_path)
 
-            def run_prediction():
-                nonlocal result, prediction_error
+            except Exception as pred_error:
+                logger.error(f"Prediction failed: {pred_error}")
+                # Try to reload model once if prediction fails
                 try:
+                    logger.info("Attempting model reload after prediction failure...")
+                    detector.unload_model()
+                    gc.collect()
+                    detector.load_model()
                     result = detector.predict(file_path)
-                except Exception as e:
-                    prediction_error = e
-
-            # Run prediction in thread with timeout
-            prediction_thread = threading.Thread(target=run_prediction)
-            prediction_thread.daemon = True
-            prediction_thread.start()
-
-            # Wait for prediction with timeout (60 seconds max)
-            prediction_thread.join(timeout=60)
-
-            if prediction_thread.is_alive():
-                logger.error("Prediction timed out after 60 seconds")
-                # Force cleanup
-                force_memory_cleanup()
-                raise TimeoutError("Prediction timed out - model may be overloaded")
-
-            if prediction_error:
-                raise prediction_error
+                    logger.info("Prediction successful after model reload")
+                except Exception as retry_error:
+                    logger.error(f"Prediction failed even after model reload: {retry_error}")
+                    raise retry_error
 
             # Validate result
             if not result or 'prediction' not in result:
