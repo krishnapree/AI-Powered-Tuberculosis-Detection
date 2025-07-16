@@ -806,8 +806,8 @@ def upload_and_predict():
                 # FALLBACK: Use mock service for reliable results
                 logger.info("Falling back to mock TB detection service...")
                 try:
-                    from .mock_tb_service import MockTBDetector
-                    mock_detector = MockTBDetector()
+                    from .mock_tb_service import MockTBDetectionModel
+                    mock_detector = MockTBDetectionModel()
                     result = mock_detector.predict(file_path)
 
                     # Add fallback indicator to result
@@ -1112,8 +1112,8 @@ def upload_and_predict_mock():
 
         # Use mock service for reliable results
         try:
-            from .mock_tb_service import MockTBDetector
-            mock_detector = MockTBDetector()
+            from .mock_tb_service import MockTBDetectionModel
+            mock_detector = MockTBDetectionModel()
             result = mock_detector.predict(file_path)
 
             # Add mock indicator
