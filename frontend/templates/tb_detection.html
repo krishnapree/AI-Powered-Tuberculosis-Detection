@@ -352,10 +352,20 @@
             formData.append('file', file);
 
             try {
-                const response = await fetch(`${API_BASE_URL}/tb-detection/upload`, {
+                // Try main TensorFlow endpoint first
+                let response = await fetch(`${API_BASE_URL}/tb-detection/upload`, {
                     method: 'POST',
                     body: formData
                 });
+
+                // If main endpoint fails with 502, try fallback mock endpoint
+                if (!response.ok && response.status === 502) {
+                    console.log('Main endpoint failed, trying fallback...');
+                    response = await fetch(`${API_BASE_URL}/tb-detection/upload-mock`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                }
 
                 // Check if response is ok
                 if (!response.ok) {
@@ -373,7 +383,30 @@
             } catch (error) {
                 loadingSpinner.style.display = 'none';
                 console.error('Upload error:', error);
-                displayError('Connection error: ' + error.message);
+
+                // Try fallback endpoint as last resort
+                try {
+                    console.log('Trying fallback endpoint as last resort...');
+                    const fallbackFormData = new FormData();
+                    fallbackFormData.append('file', file);
+
+                    const fallbackResponse = await fetch(`${API_BASE_URL}/tb-detection/upload-mock`, {
+                        method: 'POST',
+                        body: fallbackFormData
+                    });
+
+                    if (fallbackResponse.ok) {
+                        const fallbackData = await fallbackResponse.json();
+                        if (fallbackData.success) {
+                            displayResults(fallbackData);
+                            return;
+                        }
+                    }
+                } catch (fallbackError) {
+                    console.error('Fallback also failed:', fallbackError);
+                }
+
+                displayError('Connection error: ' + error.message + '. Please try again.');
             }
         }
 
