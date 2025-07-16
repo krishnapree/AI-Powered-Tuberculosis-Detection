@@ -664,7 +664,7 @@ def upload_and_predict():
         # In production, basic file validation is sufficient
         logger.info("Skipping chest X-ray validation to prevent OpenCV-related crashes")
 
-        # Make prediction with comprehensive error handling (no signal timeout for Windows compatibility)
+        # Make prediction with comprehensive error handling and timeout protection
         try:
             # Force garbage collection before prediction
             import gc
@@ -676,7 +676,36 @@ def upload_and_predict():
             if not detector:
                 raise ValueError("TB detector not initialized")
 
-            result = detector.predict(file_path)
+            # Add timeout protection for prediction
+            import threading
+            import time
+
+            result = None
+            prediction_error = None
+
+            def run_prediction():
+                nonlocal result, prediction_error
+                try:
+                    result = detector.predict(file_path)
+                except Exception as e:
+                    prediction_error = e
+
+            # Run prediction in thread with timeout
+            prediction_thread = threading.Thread(target=run_prediction)
+            prediction_thread.daemon = True
+            prediction_thread.start()
+
+            # Wait for prediction with timeout (60 seconds max)
+            prediction_thread.join(timeout=60)
+
+            if prediction_thread.is_alive():
+                logger.error("Prediction timed out after 60 seconds")
+                # Force cleanup
+                force_memory_cleanup()
+                raise TimeoutError("Prediction timed out - model may be overloaded")
+
+            if prediction_error:
+                raise prediction_error
 
             # Validate result
             if not result or 'prediction' not in result:
@@ -684,11 +713,20 @@ def upload_and_predict():
 
             logger.info(f"Prediction completed: {result.get('prediction', 'unknown')}")
 
-            # Model will be unloaded by the detector.predict() method
-            # Don't unload here to prevent double unloading
-
             # Force aggressive garbage collection after prediction
             gc.collect()
+
+        except TimeoutError as e:
+            logger.error(f"Prediction timeout: {e}")
+            # Clean up file
+            try:
+                os.remove(file_path)
+            except:
+                pass
+            return jsonify({
+                'success': False,
+                'error': 'Analysis timed out. The model may be overloaded. Please try again in a moment.'
+            }), 504  # Gateway Timeout
 
         except MemoryError as e:
             logger.error(f"Memory error during prediction: {e}")
@@ -709,10 +747,19 @@ def upload_and_predict():
                 os.remove(file_path)
             except:
                 pass
-            return jsonify({
-                'success': False,
-                'error': f'Analysis failed: {str(e)}'
-            }), 500
+
+            # Check if it's a TensorFlow-related error
+            error_msg = str(e).lower()
+            if 'tensorflow' in error_msg or 'tflite' in error_msg:
+                return jsonify({
+                    'success': False,
+                    'error': 'Model loading error. Please try again in a moment.'
+                }), 503  # Service Unavailable
+            else:
+                return jsonify({
+                    'success': False,
+                    'error': f'Analysis failed: {str(e)}'
+                }), 500
 
         # Add file info to response
         result['filename'] = filename
@@ -866,3 +913,28 @@ def test_service():
             'status': 'error',
             'message': 'TB Detection service not available'
         }), 503
+
+@tb_bp.route('/warmup', methods=['POST'])
+def warmup_model():
+    """Warmup endpoint to preload the model"""
+    try:
+        detector = get_tb_detector()
+        if detector:
+            # Try to load the model without making a prediction
+            detector.load_model()
+            return jsonify({
+                'status': 'success',
+                'message': 'Model warmed up successfully',
+                'accuracy': detector.accuracy
+            })
+        else:
+            return jsonify({
+                'status': 'error',
+                'message': 'TB detector not available'
+            }), 503
+    except Exception as e:
+        logger.error(f"Error warming up model: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Model warmup failed: {str(e)}'
+        }), 500

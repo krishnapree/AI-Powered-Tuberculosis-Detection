@@ -368,7 +368,26 @@ def create_app(config_name='default'):
     @app.errorhandler(502)
     def bad_gateway(error):
         logger.error(f"Bad gateway error: {error}")
-        return jsonify({'error': 'Service temporarily unavailable'}), 502
+        return jsonify({
+            'error': 'Service temporarily unavailable. Please try again in a moment.',
+            'suggestion': 'The AI model may be loading. Please wait a moment and try again.'
+        }), 502
+
+    @app.errorhandler(503)
+    def service_unavailable(error):
+        logger.error(f"Service unavailable: {error}")
+        return jsonify({
+            'error': 'Service temporarily unavailable. Please try again in a moment.',
+            'suggestion': 'The AI model may be loading. Please wait a moment and try again.'
+        }), 503
+
+    @app.errorhandler(504)
+    def gateway_timeout(error):
+        logger.error(f"Gateway timeout: {error}")
+        return jsonify({
+            'error': 'Request timed out. Please try again.',
+            'suggestion': 'The analysis is taking longer than expected. Please try again.'
+        }), 504
 
     return app
 
