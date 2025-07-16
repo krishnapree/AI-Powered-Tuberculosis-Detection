@@ -13,17 +13,159 @@ import sqlite3
 import hashlib
 import secrets
 import os
+import logging
 from datetime import datetime, timedelta
 from flask import Blueprint, request, jsonify, session
 from werkzeug.security import generate_password_hash, check_password_hash
 
+# Configure logging
+logger = logging.getLogger(__name__)
+
 # Create authentication blueprint
 auth_bp = Blueprint('auth', __name__)
+
+# In-memory session store for Render deployment reliability
+class MemorySessionStore:
+    def __init__(self):
+        self.sessions = {}
+        self.users = {}
+        self.user_counter = 1
+        logger.info("✅ Memory session store initialized")
+
+    def register_user(self, username, email, password, full_name):
+        """Register user in memory"""
+        try:
+            # Check if user exists
+            for user in self.users.values():
+                if user['username'] == username or user['email'] == email:
+                    return {'success': False, 'error': 'Username or email already exists'}
+
+            # Create user
+            user_id = self.user_counter
+            self.user_counter += 1
+
+            password_hash = generate_password_hash(password)
+
+            self.users[user_id] = {
+                'id': user_id,
+                'username': username,
+                'email': email,
+                'password_hash': password_hash,
+                'full_name': full_name,
+                'created_at': datetime.now(),
+                'is_active': True
+            }
+
+            logger.info(f"✅ User registered: {username}")
+            return {
+                'success': True,
+                'message': 'User registered successfully',
+                'user_id': user_id
+            }
+
+        except Exception as e:
+            logger.error(f"Registration error: {e}")
+            return {'success': False, 'error': f'Registration failed: {str(e)}'}
+
+    def login_user(self, username, password):
+        """Login user and create session"""
+        try:
+            # Find user
+            user = None
+            for u in self.users.values():
+                if (u['username'] == username or u['email'] == username) and u['is_active']:
+                    user = u
+                    break
+
+            if not user:
+                return {'success': False, 'error': 'Invalid username or password'}
+
+            # Check password
+            if not check_password_hash(user['password_hash'], password):
+                return {'success': False, 'error': 'Invalid username or password'}
+
+            # Create session
+            session_token = secrets.token_urlsafe(32)
+            expires_at = datetime.now() + timedelta(days=7)
+
+            self.sessions[session_token] = {
+                'user_id': user['id'],
+                'created_at': datetime.now(),
+                'expires_at': expires_at,
+                'is_active': True
+            }
+
+            logger.info(f"✅ User logged in: {username}")
+            return {
+                'success': True,
+                'message': 'Login successful',
+                'user': {
+                    'id': user['id'],
+                    'username': user['username'],
+                    'email': user['email'],
+                    'full_name': user['full_name']
+                },
+                'session_token': session_token
+            }
+
+        except Exception as e:
+            logger.error(f"Login error: {e}")
+            return {'success': False, 'error': f'Login failed: {str(e)}'}
+
+    def verify_session(self, session_token):
+        """Verify session token"""
+        try:
+            session = self.sessions.get(session_token)
+
+            if not session or not session['is_active']:
+                return {'success': False, 'error': 'Invalid session'}
+
+            if datetime.now() > session['expires_at']:
+                session['is_active'] = False
+                return {'success': False, 'error': 'Session expired'}
+
+            user = self.users.get(session['user_id'])
+            if not user or not user['is_active']:
+                return {'success': False, 'error': 'User not found'}
+
+            return {
+                'success': True,
+                'user': {
+                    'id': user['id'],
+                    'username': user['username'],
+                    'email': user['email'],
+                    'full_name': user['full_name']
+                }
+            }
+
+        except Exception as e:
+            logger.error(f"Session verification error: {e}")
+            return {'success': False, 'error': f'Session verification failed: {str(e)}'}
+
+    def logout_user(self, session_token):
+        """Logout user"""
+        try:
+            if session_token in self.sessions:
+                self.sessions[session_token]['is_active'] = False
+                logger.info("✅ User logged out")
+            return {'success': True, 'message': 'Logged out successfully'}
+        except Exception as e:
+            logger.error(f"Logout error: {e}")
+            return {'success': False, 'error': f'Logout failed: {str(e)}'}
+
+# Global memory store instance
+memory_store = MemorySessionStore()
 
 class AuthService:
     def __init__(self, db_path='data/users.db'):
         self.db_path = db_path
-        self.init_database()
+        self.use_memory_store = False
+        try:
+            self.init_database()
+            logger.info("✅ SQLite database initialized")
+        except Exception as e:
+            logger.warning(f"SQLite failed, using memory store: {e}")
+            self.use_memory_store = True
     
     def init_database(self):
         """Initialize the users database"""
@@ -69,87 +211,97 @@ class AuthService:
     
     def register_user(self, username, email, password, full_name):
         """Register a new user"""
+        # Use memory store if SQLite is not available
+        if self.use_memory_store:
+            return memory_store.register_user(username, email, password, full_name)
+
         try:
             # Validate input
             if not all([username, email, password, full_name]):
                 return {'success': False, 'error': 'All fields are required'}
-            
+
             if len(password) < 6:
                 return {'success': False, 'error': 'Password must be at least 6 characters'}
-            
+
             # Hash password
             password_hash = generate_password_hash(password)
-            
+
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
-            
+
             # Check if user already exists
             cursor.execute('SELECT id FROM users WHERE username = ? OR email = ?', (username, email))
             if cursor.fetchone():
                 conn.close()
                 return {'success': False, 'error': 'Username or email already exists'}
-            
+
             # Insert new user
             cursor.execute('''
                 INSERT INTO users (username, email, password_hash, full_name)
                 VALUES (?, ?, ?, ?)
             ''', (username, email, password_hash, full_name))
-            
+
             user_id = cursor.lastrowid
             conn.commit()
             conn.close()
-            
+
             return {
                 'success': True,
                 'message': 'User registered successfully',
                 'user_id': user_id
             }
-            
+
         except Exception as e:
-            return {'success': False, 'error': f'Registration failed: {str(e)}'}
+            logger.error(f"SQLite registration failed, falling back to memory store: {e}")
+            self.use_memory_store = True
+            return memory_store.register_user(username, email, password, full_name)
     
     def login_user(self, username, password):
         """Authenticate user login"""
+        # Use memory store if SQLite is not available
+        if self.use_memory_store:
+            return memory_store.login_user(username, password)
+
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
-            
+
             # Get user by username or email
             cursor.execute('''
                 SELECT id, username, email, password_hash, full_name, is_active
-                FROM users 
+                FROM users
                 WHERE (username = ? OR email = ?) AND is_active = 1
             ''', (username, username))
-            
+
             user = cursor.fetchone()
-            
+
             if not user:
                 conn.close()
                 return {'success': False, 'error': 'Invalid username or password'}
-            
+
             user_id, db_username, email, password_hash, full_name, is_active = user
-            
+
             # Check password
             if not check_password_hash(password_hash, password):
                 conn.close()
                 return {'success': False, 'error': 'Invalid username or password'}
-            
+
             # Update last login
-            cursor.execute('UPDATE users SET last_login = ? WHERE id = ?', 
+            cursor.execute('UPDATE users SET last_login = ? WHERE id = ?',
                          (datetime.now(), user_id))
-            
+
             # Create session token
             session_token = secrets.token_urlsafe(32)
             expires_at = datetime.now() + timedelta(days=7)  # 7 days session
-            
+
             cursor.execute('''
                 INSERT INTO user_sessions (user_id, session_token, expires_at)
                 VALUES (?, ?, ?)
             ''', (user_id, session_token, expires_at))
-            
+
             conn.commit()
             conn.close()
-            
+
             return {
                 'success': True,
                 'message': 'Login successful',
@@ -161,27 +313,33 @@ class AuthService:
                 },
                 'session_token': session_token
             }
-            
+
         except Exception as e:
-            return {'success': False, 'error': f'Login failed: {str(e)}'}
+            logger.error(f"SQLite login failed, falling back to memory store: {e}")
+            self.use_memory_store = True
+            return memory_store.login_user(username, password)
     
     def verify_session(self, session_token):
         """Verify if session token is valid"""
+        # Use memory store if SQLite is not available
+        if self.use_memory_store:
+            return memory_store.verify_session(session_token)
+
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
-            
+
             cursor.execute('''
                 SELECT u.id, u.username, u.email, u.full_name
                 FROM users u
                 JOIN user_sessions s ON u.id = s.user_id
-                WHERE s.session_token = ? AND s.is_active = 1 
+                WHERE s.session_token = ? AND s.is_active = 1
                 AND s.expires_at > ? AND u.is_active = 1
             ''', (session_token, datetime.now()))
-            
+
             user = cursor.fetchone()
             conn.close()
-            
+
             if user:
                 return {
                     'success': True,
@@ -194,29 +352,37 @@ class AuthService:
                 }
             else:
                 return {'success': False, 'error': 'Invalid or expired session'}
-                
+
         except Exception as e:
-            return {'success': False, 'error': f'Session verification failed: {str(e)}'}
+            logger.error(f"SQLite session verification failed, falling back to memory store: {e}")
+            self.use_memory_store = True
+            return memory_store.verify_session(session_token)
     
     def logout_user(self, session_token):
         """Logout user by invalidating session"""
+        # Use memory store if SQLite is not available
+        if self.use_memory_store:
+            return memory_store.logout_user(session_token)
+
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
-            
+
             cursor.execute('''
-                UPDATE user_sessions 
-                SET is_active = 0 
+                UPDATE user_sessions
+                SET is_active = 0
                 WHERE session_token = ?
             ''', (session_token,))
-            
+
             conn.commit()
             conn.close()
-            
+
             return {'success': True, 'message': 'Logged out successfully'}
-            
+
         except Exception as e:
-            return {'success': False, 'error': f'Logout failed: {str(e)}'}
+            logger.error(f"SQLite logout failed, falling back to memory store: {e}")
+            self.use_memory_store = True
+            return memory_store.logout_user(session_token)
 
 # Initialize auth service
 auth_service = AuthService()
